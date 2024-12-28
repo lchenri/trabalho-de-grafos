@@ -129,9 +129,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ConsoleApplication1.cpp" />
+    <ClCompile Include="grafo_lista.cpp" />
+    <ClCompile Include="lista_encadeada.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="grafo.h" />
+    <ClInclude Include="grafo_lista.h" />
+    <ClInclude Include="lista_encadeada.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
