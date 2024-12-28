@@ -61,7 +61,7 @@ public:
 
 	// Cria um novo grafo a partir de uma descrição
 
-	virtual void novo_grafo(const std::string& descricao, const std::string& arquivo) = 0;
+	virtual void novo_grafo(const std::string& arquivo) = 0;
 
 	// Exibe a descrição do grafo
 
