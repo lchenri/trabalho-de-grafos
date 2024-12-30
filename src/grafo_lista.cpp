@@ -19,7 +19,7 @@ void Grafo_Lista::carrega_grafo(const std::string &arquivo)
     //implementar
 }
 // Cria um novo grafo a partir de uma descrição
-void Grafo_Lista::novo_grafo(const std::string &descricao, const std::string &arquivo)
+void Grafo_Lista::novo_grafo(const std::string &arquivo)
 {
     //implementar
 }
