@@ -1,14 +1,9 @@
-#include "grafo_matriz.h"
-
+#include "../include/grafo_matriz.h"
 #include <fstream>
-
 #include <sstream>
-
 #include <queue>
-
-#include <stack>
-
 #include <iostream>
+#include <functional>
 
 Grafo_Matriz::Grafo_Matriz() : num_vertices(0), num_arestas(0), direcionado(false),
 
@@ -23,14 +18,13 @@ componentes_conexas(0) {
 
 Grafo_Matriz::~Grafo_Matriz() {}
 
-// Inicializa a matriz de adjacência
+// Inicializa a matriz de adjacï¿½ncia
 
 void Grafo_Matriz::inicializa_matriz() {
-
 	// Implementar
 }
 
-// Adiciona uma aresta à matriz
+// Adiciona uma aresta ï¿½ matriz
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 
@@ -46,15 +40,13 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 
 }
 
-// Cria um novo grafo a partir de uma descrição
+// Cria um novo grafo a partir de uma descriï¿½ï¿½o
 
 void Grafo_Matriz::novo_grafo(const std::string& arquivo) {
-
 	// Implementar
-
 }
 
-// Implementação das funções abstratas
+// Implementaï¿½ï¿½o das funï¿½ï¿½es abstratas
 
 bool Grafo_Matriz::eh_bipartido() {
 
@@ -134,22 +126,22 @@ void Grafo_Matriz::exibe_descricao() {
 
 	std::cout << "Ordem: " << get_ordem() << std::endl;
 
-	std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "Não") << std::endl;
+	std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nï¿½o") << std::endl;
 
 	std::cout << "Componentes conexas: " << n_conexo() << std::endl;
 
-	std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Não") << std::endl;
+	std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Não") << std::endl;
+	std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Completo: " << (eh_completo() ? "Sim" : "Não") << std::endl;
+	std::cout << "Completo: " << (eh_completo() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Não") << std::endl;
+	std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Arvore: " << (eh_arvore() ? "Sim" : "Não") << std::endl;
+	std::cout << "Arvore: " << (eh_arvore() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Não") << std::endl;
+	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Nï¿½o") << std::endl;
 
-	std::cout << "Vertice de Articulação: " << (possui_articulacao() ? "Sim" : "Não") << std::endl;
+	std::cout << "Vertice de Articulaï¿½ï¿½o: " << (possui_articulacao() ? "Sim" : "Nï¿½o") << std::endl;
 
 }
