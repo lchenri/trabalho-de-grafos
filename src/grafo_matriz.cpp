@@ -27,9 +27,8 @@ void Grafo_Matriz::inicializa_matriz() {
 // Adiciona uma aresta � matriz
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
-
-	// Implementar
-
+	matriz_adjacencia[origem][destino] = peso;
+	num_arestas++;
 }
 
 // Carrega o grafo a partir de um arquivo
