@@ -21,8 +21,7 @@ bool validar_argumentos(int argc, char *argv[])
         return false;
     }
 
-    std::string modo = argv[1];
-    if (modo == "-c" && argc < 5)
+    if ( const std::string modo = argv[1];modo == "-c" && argc < 5)
     {
         exibir_uso();
         return false;
@@ -38,20 +37,46 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    std::string modo = argv[1];
-    std::string estrutura = argv[2];
+    const std::string modo = argv[1];
+    const std::string estrutura = argv[2];
 
     if (modo == "-d")
     {
-        std::string arquivo = argv[3];
-        // Implementar lógica para modo -d
+        const std::string arquivo = argv[3];
+        if (estrutura == "-m") {
+            Grafo_Matriz grafo;
+            grafo.carrega_grafo(arquivo);
+            grafo.exibe_descricao();
+        }else if (estrutura == "-l") {
+            Grafo_Lista grafo;
+            grafo.carrega_grafo(arquivo);
+            grafo.exibe_descricao();
+        }else {
+            exibir_uso();
+            return 1;
+        }
     }
     else if (modo == "-c")
     {
         std::string descricao = argv[3];
         std::string arquivo = argv[4];
-        // Implementar lógica para modo -c
+        if (estrutura == "-m") {
+            Grafo_Matriz grafo;
+            grafo.novo_grafo(descricao, arquivo);
+            std::cout << "Novo grafo criado e salvo em " << arquivo << " usando matriz de adjacência" << std::endl;
+        }else if (estrutura == "-l") {
+            Grafo_Lista grafo;
+            grafo.novo_grafo(descricao, arquivo);
+            std::cout << "Novo grafo criado e salvo em " << arquivo << " usando lista encadeada" << std::endl;
+        } else {
+            exibir_uso();
+            return 1;
+        }
     }
-
+    else
+    {
+        exibir_uso();
+        return 1;
+    }
     return 0;
 }

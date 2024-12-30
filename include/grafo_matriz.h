@@ -36,7 +36,7 @@ public:
     bool possui_articulacao() override;
     bool possui_ponte() override;
     void carrega_grafo(const std::string &arquivo) override;
-    void novo_grafo(const std::string &arquivo) override;
+    void novo_grafo(const std::string& descricao, std::string& arquivo) override;
     void exibe_descricao() override;
     // Funções auxiliares
     void inicializa_matriz();

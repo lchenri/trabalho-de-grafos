@@ -30,7 +30,7 @@ public:
     // Carrega o grafo a partir de um arquivo
     virtual void carrega_grafo(const std::string &arquivo) = 0;
     // Cria um novo grafo a partir de uma descrição
-    virtual void novo_grafo(const std::string &arquivo) = 0;
+    virtual void novo_grafo(const std::string& descricao, std::string& arquivo) = 0;
     // Exibe a descrição do grafo
     virtual void exibe_descricao() = 0;
 };
