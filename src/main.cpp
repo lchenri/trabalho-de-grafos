@@ -30,6 +30,17 @@ bool validar_argumentos(int argc, char *argv[])
     return true;
 }
 
+std::string debug_matriz_adjacencia(const std::vector<std::vector<int>>& matriz) {
+    std::string result;
+    for (const auto& linha : matriz) {
+        for (int num : linha) {
+            result += std::to_string(num) + " ";
+        }
+        result += "\n";
+    }
+    return result;
+}
+
 int main(int argc, char *argv[])
 {
     if (!validar_argumentos(argc, argv))
@@ -47,6 +58,7 @@ int main(int argc, char *argv[])
             Grafo_Matriz grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
+            std::string foo = "foo";
         }else if (estrutura == "-l") {
             Grafo_Lista grafo;
             grafo.carrega_grafo(arquivo);
