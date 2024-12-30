@@ -1,0 +1,16 @@
+# ninja log v6
+6	455	7572092840210466	CMakeFiles/Grafos_Teste.dir/grafo_lista.cpp.obj	ec203ba401e4efb5
+2	548	7572092840170428	CMakeFiles/Grafos_Teste.dir/main.cpp.obj	d4ace3537948b544
+623	784	7572257745898198	Grafos_Teste.exe	e12af49f694c80de
+9	883	7572092840230482	CMakeFiles/Grafos_Teste.dir/grafo_matriz.cpp.obj	55661dc5e34e7f88
+10	360	7572094724214358	CMakeFiles/Grafos_Teste.dir/lista_encadeada.cpp.obj	9417f37523ff8d02
+2	238	7572258112551667	build.ninja	5bad2b0bd98bbcce
+20	423	7572257739874350	CMakeFiles/Grafos_Teste.dir/src/lista_encadeada.cpp.obj	2b2d900d64f6e83a
+10	495	7572257739774266	CMakeFiles/Grafos_Teste.dir/src/main.cpp.obj	37c80faaa0220ed9
+17	623	7572257739844330	CMakeFiles/Grafos_Teste.dir/src/grafo_matriz.cpp.obj	dd4866035165291b
+14	421	7572257739814297	CMakeFiles/Grafos_Teste.dir/src/grafo_lista.cpp.obj	1b8b544da14d8a43
+5	393	7572258232251143	CMakeFiles/main.dir/src/grafo_lista.cpp.obj	7c18f3a2dcbf41c0
+11	395	7572258232311200	CMakeFiles/main.dir/src/lista_encadeada.cpp.obj	ac9d00451e640302
+1	441	7572258232221120	CMakeFiles/main.dir/src/main.cpp.obj	160bb47a487af893
+8	615	7572258232281170	CMakeFiles/main.dir/src/grafo_matriz.cpp.obj	6d9cf5039d55b844
+615	690	7572258238356722	main.exe	e60750b51a9f3906
