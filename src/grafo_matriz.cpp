@@ -21,7 +21,7 @@ Grafo_Matriz::~Grafo_Matriz() {}
 
 void Grafo_Matriz::inicializa_matriz() {
 	// Inicializa a matriz quadrada de tamanho num_vertices e atribui 0 para cada posição.
-	matriz_adjacencia.resize(num_vertices, std::vector<int>(num_vertices, 0));
+	matriz_adjacencia.resize(num_vertices+1, std::vector<int>(num_vertices+1, 0));
 }
 
 // Adiciona uma aresta � matriz
