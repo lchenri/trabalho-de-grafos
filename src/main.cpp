@@ -30,18 +30,6 @@ bool validar_argumentos(int argc, char *argv[])
     return true;
 }
 
-// std::string debug_matriz_adjacencia(const std::vector<std::vector<int>>& matriz) {
-//     std::string result;
-//     for (const auto& linha : matriz) {
-//         for (int num : linha) {
-//             if (!linha[0])
-//             result += std::to_string(num) + " ";
-//         }
-//         result += "\n";
-//     }
-//     return result;
-// }
-
 std::string debug_matriz_adjacencia(const std::vector<std::vector<int>>& matriz) {
     std::string result;
     for (size_t i = 1; i < matriz.size(); ++i) {
