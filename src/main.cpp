@@ -42,6 +42,18 @@ std::string debug_matriz_adjacencia(const std::vector<std::vector<int>>& matriz)
     return result;
 }
 
+std::string debug_matriz_ligacoes(const std::vector<std::vector<bool>>& matriz) {
+    std::string result;
+    for (size_t i = 1; i < matriz.size(); ++i) {
+        const auto& linha = matriz[i];
+        for (size_t j = 1; j < linha.size(); j++) {
+            result += std::to_string(linha[j]) + " ";
+        }
+        result += "\n";
+    }
+    return result;
+}
+
 int main(int argc, char *argv[])
 {
     if (!validar_argumentos(argc, argv))
