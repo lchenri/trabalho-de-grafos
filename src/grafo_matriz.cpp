@@ -82,10 +82,18 @@ int Grafo_Matriz::n_conexo() {
 }
 
 int Grafo_Matriz::get_grau() {
-
-	// Implementar
-	return 0;
-
+	// Todo Revisar
+	// Retorna o grau máximo do grafo
+	int grau_max = 0;
+	for (int i = 1; i <= num_vertices; i++) {
+		int grau = 0;
+		for (int j = 1; j <= num_vertices; j++) {
+			if (matriz_adjacencia[i][j] != 0)
+				grau++;
+		}
+		grau_max = std::max(grau_max, grau);
+	}
+	return grau_max;
 }
 
 int Grafo_Matriz::get_ordem() {
