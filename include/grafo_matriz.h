@@ -18,6 +18,7 @@ private:
     bool possui_articulacao_flag;
     int componentes_conexas;
     std::vector<std::vector<int>> matriz_adjacencia;
+    std::vector<std::vector<bool>> matriz_ligacoes;
     std::vector<int> pesos_vertices;
 
 public:

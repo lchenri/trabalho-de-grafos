@@ -22,12 +22,14 @@ Grafo_Matriz::~Grafo_Matriz() {}
 void Grafo_Matriz::inicializa_matriz() {
 	// Inicializa a matriz quadrada de tamanho num_vertices e atribui 0 para cada posição.
 	matriz_adjacencia.resize(num_vertices+1, std::vector<int>(num_vertices+1, 0));
+	matriz_ligacoes.resize(num_vertices+1, std::vector<bool>(num_vertices+1, false));
 }
 
 // Adiciona uma aresta � matriz
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 	matriz_adjacencia[origem][destino] = peso;
+	matriz_ligacoes[origem][destino] = true;
 	num_arestas++;
 }
 
@@ -120,15 +122,22 @@ bool Grafo_Matriz::aresta_ponderada() {
 
 }
 
-bool Grafo_Matriz::eh_completo() {
+bool Grafo_Matriz::eh_completo()
+{
+	for (int i = 1; i <= num_vertices; i++)
+		for (int j = 1; j <= num_vertices; j++)
+		{
+			if (matriz_ligacoes[i][j] == false && i != j)
+				return false;
+		}
 
-	// Implementar
-	return false;
+	return true;
 
 }
 
 bool Grafo_Matriz::eh_arvore() {
 
+	//implementar
 	return false;
 
 }
