@@ -3,6 +3,7 @@
 #include <sstream>
 #include <queue>
 #include <iostream>
+#include <functional>
 
 Grafo_Matriz::Grafo_Matriz() : num_vertices(0), num_arestas(0), direcionado(false),
 
@@ -28,8 +29,19 @@ void Grafo_Matriz::inicializa_matriz() {
 // Adiciona uma aresta � matriz
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
-	matriz_adjacencia[origem][destino] = peso;
-	matriz_ligacoes[origem][destino] = true;
+
+	if (eh_direcionado())
+	{
+		matriz_adjacencia[origem][destino] = peso;
+		matriz_ligacoes[origem][destino] = true;
+	} else
+	{
+		matriz_adjacencia[origem][destino] = peso;
+		matriz_adjacencia[destino][origem] = peso;
+		matriz_ligacoes[origem][destino] = true;
+		matriz_ligacoes[destino][origem] = true;
+	}
+
 	num_arestas++;
 }
 
@@ -150,11 +162,40 @@ bool Grafo_Matriz::possui_articulacao() {
 }
 
 bool Grafo_Matriz::possui_ponte() {
+	std::vector<int> descoberta(num_vertices, -1);
+	std::vector<int> menor_alcance(num_vertices, -1);
+	std::vector<int> pai(num_vertices, -1);
+	int tempo = 0;
 
-	// Implementar
-	return false;
+	possui_ponte_flag = false;
 
+	std::function<void(int)> dfs = [&](int u) {
+		descoberta[u] = menor_alcance[u] = tempo++;
+		for (int v = 0; v < num_vertices; ++v) {
+			if (matriz_ligacoes[u][v]) {
+				if (descoberta[v] == -1) {
+					pai[v] = u;
+					dfs(v);
+					menor_alcance[u] = std::min(menor_alcance[u], menor_alcance[v]);
+					if (menor_alcance[v] > descoberta[u]) {
+						possui_ponte_flag = true;
+					}
+				} else if (v != pai[u]) {
+					menor_alcance[u] = std::min(menor_alcance[u], descoberta[v]);
+				}
+			}
+		}
+	};
+
+	for (int i = 0; i < num_vertices; ++i) {
+		if (descoberta[i] == -1) {
+			dfs(i);
+		}
+	}
+
+	return possui_ponte_flag; // Retorna o valor do flag
 }
+
 
 void Grafo_Matriz::exibe_descricao() {
 
@@ -162,22 +203,22 @@ void Grafo_Matriz::exibe_descricao() {
 
 	std::cout << "Ordem: " << get_ordem() << std::endl;
 
-	std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nao") << std::endl;
 
 	std::cout << "Componentes conexas: " << n_conexo() << std::endl;
 
-	std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nao")<< std::endl;
 
-	std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Nao") << std::endl;
 
-	std::cout << "Completo: " << (eh_completo() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Completo: " << (eh_completo() ? "Sim" : "Nao") << std::endl;
 
-	std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Nao") << std::endl;
 
-	std::cout << "Arvore: " << (eh_arvore() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Arvore: " << (eh_arvore() ? "Sim" : "Nao") << std::endl;
 
-	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Nao") << std::endl;
 
-	std::cout << "Vertice de Articula��o: " << (possui_articulacao() ? "Sim" : "N�o") << std::endl;
+	std::cout << "Vertice de Articulacao: " << (possui_articulacao() ? "Sim" : "Nao") << std::endl;
 
 }
