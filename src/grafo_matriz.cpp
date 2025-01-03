@@ -89,10 +89,26 @@ bool Grafo_Matriz::eh_bipartido() {
 }
 
 int Grafo_Matriz::n_conexo() {
+	std::vector<bool> visitado(num_vertices + 1, false);
+	std::function<void(int)> dfs = [&](int v) {
+		visitado[v] = true;
+		for (int u = 1; u <= num_vertices; ++u) {
+			if (matriz_ligacoes[v][u] && !visitado[u]) {
+				dfs(u);
+			}
+		}
+	};
 
-	// Implementar
-	return 0;
+	int componentes = 0;
+	for (int i = 1; i <= num_vertices; ++i) {
+		if (!visitado[i]) {
+			dfs(i);
+			componentes++;
+		}
+	}
 
+	componentes_conexas = componentes;
+	return componentes_conexas;
 }
 
 int Grafo_Matriz::get_grau() {
@@ -148,10 +164,7 @@ bool Grafo_Matriz::eh_completo()
 }
 
 bool Grafo_Matriz::eh_arvore() {
-
-	//implementar
-	return false;
-
+	return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
 bool Grafo_Matriz::possui_articulacao() {
