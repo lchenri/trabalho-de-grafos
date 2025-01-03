@@ -15,18 +15,13 @@ Grafo_Matriz::Grafo_Matriz() : num_vertices(0), num_arestas(0), direcionado(fals
 }
 
 // Destructor
-
 Grafo_Matriz::~Grafo_Matriz() {}
-
-// Inicializa a matriz de adjac�ncia
 
 void Grafo_Matriz::inicializa_matriz() {
 	// Inicializa a matriz quadrada de tamanho num_vertices e atribui 0 para cada posição.
 	matriz_adjacencia.resize(num_vertices+1, std::vector<int>(num_vertices+1, 0));
 	matriz_ligacoes.resize(num_vertices+1, std::vector<bool>(num_vertices+1, false));
 }
-
-// Adiciona uma aresta � matriz
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 
@@ -46,7 +41,6 @@ void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 }
 
 // Carrega o grafo a partir de um arquivo
-
 void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	std::ifstream arquivo_entrada(arquivo);
 
@@ -57,6 +51,7 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	arquivo_entrada >> num_vertices >> direcionado >> peso_vertices >> peso_arestas;
 	inicializa_matriz();
 
+	// TODO: implementar caso da aresta nao ser ponderada e tambem de ter vertices ponderados
 	if (peso_vertices) {
 		std::string linha;
 		std::getline(arquivo_entrada, linha); // lê até o final da linha
@@ -74,17 +69,45 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	}
 }
 
-// Cria um novo grafo a partir de uma descri��o
+// Cria um novo grafo a partir de uma descricao
 void Grafo_Matriz::novo_grafo(const std::string& descricao, std::string& arquivo) {
-	// Implementar
+	// TODO: Implementar
 }
 
-// Implementa��o das fun��es abstratas
+//----------------------------------------------------------------------------------------------------------------------
 
+// Implementa��o das fun��es abstratas
 bool Grafo_Matriz::eh_bipartido() {
 
-	// Implementar
-	return false;
+	std::vector<int> cor(num_vertices + 1, -1);
+	std::queue<int> fila;
+
+	for (int i = 1; i <= num_vertices; ++i) {
+		if (cor[i] == -1) {
+			cor[i] = 0;
+			fila.push(i);
+
+			while (!fila.empty()) {
+				int u = fila.front();
+				fila.pop();
+
+				for (int v = 1; v <= num_vertices; ++v) {
+					if (matriz_ligacoes[u][v]) {
+						if (cor[v] == -1) {
+							cor[v] = 1 - cor[u];
+							fila.push(v);
+						} else if (cor[v] == cor[u]) {
+							bipartido = false;
+							return bipartido;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	bipartido = true;
+	return bipartido;
 
 }
 
@@ -168,45 +191,71 @@ bool Grafo_Matriz::eh_arvore() {
 }
 
 bool Grafo_Matriz::possui_articulacao() {
+	std::vector<bool> visitado(num_vertices + 1, false);
+	std::vector<int> discovery(num_vertices + 1, -1);
+	std::vector<int> low(num_vertices + 1, -1);
+	std::vector<int> parent(num_vertices + 1, -1);
+	bool possui_articulacao = false;
 
-	// Implementar
-	return false;
+	std::function<void(int, int&)> dfs = [&](int u, int& tempo) {
+		visitado[u] = true;
+		discovery[u] = low[u] = ++tempo;
+		int filhos = 0;
 
-}
-
-bool Grafo_Matriz::possui_ponte() {
-	std::vector<int> descoberta(num_vertices, -1);
-	std::vector<int> menor_alcance(num_vertices, -1);
-	std::vector<int> pai(num_vertices, -1);
-	int tempo = 0;
-
-	possui_ponte_flag = false;
-
-	std::function<void(int)> dfs = [&](int u) {
-		descoberta[u] = menor_alcance[u] = tempo++;
-		for (int v = 0; v < num_vertices; ++v) {
+		for (int v = 1; v <= num_vertices; ++v) {
 			if (matriz_ligacoes[u][v]) {
-				if (descoberta[v] == -1) {
-					pai[v] = u;
-					dfs(v);
-					menor_alcance[u] = std::min(menor_alcance[u], menor_alcance[v]);
-					if (menor_alcance[v] > descoberta[u]) {
-						possui_ponte_flag = true;
-					}
-				} else if (v != pai[u]) {
-					menor_alcance[u] = std::min(menor_alcance[u], descoberta[v]);
+				if (!visitado[v]) {
+					filhos++;
+					parent[v] = u;
+					dfs(v, tempo);
+
+					low[u] = std::min(low[u], low[v]);
+
+					if (parent[u] == -1 && filhos > 1)
+						possui_articulacao = true;
+					if (parent[u] != -1 && low[v] >= discovery[u])
+						possui_articulacao = true;
+				} else if (v != parent[u]) {
+					low[u] = std::min(low[u], discovery[v]);
 				}
 			}
 		}
 	};
 
-	for (int i = 0; i < num_vertices; ++i) {
-		if (descoberta[i] == -1) {
-			dfs(i);
+	int tempo = 0;
+	for (int i = 1; i <= num_vertices; ++i) {
+		if (!visitado[i]) {
+			dfs(i, tempo);
 		}
 	}
 
-	return possui_ponte_flag; // Retorna o valor do flag
+	possui_articulacao_flag = possui_articulacao;
+	return possui_articulacao;
+}
+
+bool Grafo_Matriz::possui_ponte() {
+	int componentes_iniciais = n_conexo();
+	for (int u = 1; u <= num_vertices; ++u) {
+		for (int v = 1; v <= num_vertices; ++v) {
+			if (matriz_ligacoes[u][v]) {
+				matriz_ligacoes[u][v] = false;
+				if (!eh_direcionado()) {
+					matriz_ligacoes[v][u] = false;
+				}
+				int componentes_apos_remocao = n_conexo();
+				matriz_ligacoes[u][v] = true;
+				if (!eh_direcionado()) {
+					matriz_ligacoes[v][u] = true;
+				}
+				if (componentes_apos_remocao > componentes_iniciais) {
+					possui_ponte_flag = true;
+					return true;
+				}
+			}
+		}
+	}
+	possui_ponte_flag = false;
+	return false;
 }
 
 
