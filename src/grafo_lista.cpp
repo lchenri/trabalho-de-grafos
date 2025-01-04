@@ -3,6 +3,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <unordered_map>
+#include <iostream>
+#include <queue>
 
 Grafo_Lista::Grafo_Lista() : num_vertices(0), num_arestas(0),
                              direcionado(false),
@@ -137,7 +139,34 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
 // Implementação das funções abstratas
 bool Grafo_Lista::eh_bipartido()
 {
-    // Implementar
+    if (num_vertices == 0) return true;
+
+    std::unordered_map<int, int> cores;
+    std::queue<int> fila;
+
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        if (cores.find(vertice->id) == cores.end()) {
+            cores[vertice->id] = 0;
+            fila.push(vertice->id);
+
+            while (!fila.empty()) {
+                int atual = fila.front();
+                fila.pop();
+                int corAtual = cores[atual];
+
+                NoVertice* verticeAtual = vertices.buscar_vertice(atual);
+                for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+                    int destino = aresta->destino;
+                    if (cores.find(destino) == cores.end()) {
+                        cores[destino] = 1 - corAtual;
+                        fila.push(destino);
+                    } else if (cores[destino] == corAtual) {
+                        return false;
+                    }
+                }
+            }
+        }
+    }
     return true;
 }
 
@@ -211,7 +240,15 @@ bool Grafo_Lista::aresta_ponderada()
 
 bool Grafo_Lista::eh_completo()
 {
-    // Implementar
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        int grau = 0;
+        for (NoAresta* aresta = vertice->arestas; aresta; aresta = aresta->prox) {
+            grau++;
+        }
+        if (grau != num_vertices - 1) {
+            return false;
+        }
+    }
     return true;
 }
 
@@ -219,16 +256,113 @@ bool Grafo_Lista::eh_arvore() {
     return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
-bool Grafo_Lista::possui_articulacao()
-{
-    // Implementar
-    return false;
+bool Grafo_Lista::possui_articulacao() {
+    std::unordered_map<int, bool> visitado;
+    std::unordered_map<int, int> discovery;
+    std::unordered_map<int, int> low;
+    std::unordered_map<int, int> parent;
+    bool possui_articulacao = false;
+    int tempo = 0;
+
+    // Inicializa todos os pais como -1 e visitado como falso
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        visitado[vertice->id] = false;
+        parent[vertice->id] = -1;
+    }
+
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        if (!visitado[vertice->id]) {
+            dfs_articulacao(vertice->id, visitado, discovery, low, parent, possui_articulacao, tempo);
+        }
+    }
+
+    return possui_articulacao;
+}
+
+void Grafo_Lista::dfs_articulacao(int u, std::unordered_map<int, bool>& visitado,
+                                  std::unordered_map<int, int>& discovery,
+                                  std::unordered_map<int, int>& low,
+                                  std::unordered_map<int, int>& parent,
+                                  bool& possui_articulacao, int& tempo) {
+    visitado[u] = true;
+    discovery[u] = low[u] = ++tempo;
+    int filhos = 0;
+
+    NoVertice* verticeAtual = vertices.buscar_vertice(u);
+    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+        int v = aresta->destino;
+
+        if (!visitado[v]) {
+            filhos++;
+            parent[v] = u;
+            dfs_articulacao(v, visitado, discovery, low, parent, possui_articulacao, tempo);
+
+            low[u] = std::min(low[u], low[v]);
+
+            // Caso 1: u é raiz e tem mais de um filho
+            if (parent[u] == -1 && filhos > 1) {
+                possui_articulacao = true;
+            }
+
+            // Caso 2: u não é raiz e low[v] >= discovery[u]
+            if (parent[u] != -1 && low[v] >= discovery[u]) {
+                possui_articulacao = true;
+            }
+        } else if (v != parent[u]) {
+            low[u] = std::min(low[u], discovery[v]);
+        }
+    }
 }
 
 bool Grafo_Lista::possui_ponte()
 {
-    // Implementar
-    return false;
+    std::unordered_map<int, bool> visitado;
+    std::unordered_map<int, int> discovery;
+    std::unordered_map<int, int> low;
+    std::unordered_map<int, int> parent;
+    int tempo = 0;
+    bool possui_ponte = false;
+
+    // Inicializa todos os pais como -1 e visitado como falso
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        visitado[vertice->id] = false;
+        parent[vertice->id] = -1;
+    }
+
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        if (!visitado[vertice->id]) {
+            dfs_ponte(vertice->id, visitado, discovery, low, parent, possui_ponte, tempo);
+        }
+    }
+
+    return possui_ponte;
+}
+
+void Grafo_Lista::dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
+                            std::unordered_map<int, int>& discovery,
+                            std::unordered_map<int, int>& low,
+                            std::unordered_map<int, int>& parent,
+                            bool& possui_ponte, int& tempo) {
+    visitado[u] = true;
+    discovery[u] = low[u] = ++tempo;
+
+    NoVertice* verticeAtual = vertices.buscar_vertice(u);
+    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+        int v = aresta->destino;
+
+        if (!visitado[v]) {
+            parent[v] = u;
+            dfs_ponte(v, visitado, discovery, low, parent, possui_ponte, tempo);
+
+            low[u] = std::min(low[u], low[v]);
+
+            if (low[v] > discovery[u]) {
+                possui_ponte = true;
+            }
+        } else if (v != parent[u]) {
+            low[u] = std::min(low[u], discovery[v]);
+        }
+    }
 }
 
 void Grafo_Lista::exibe_descricao()

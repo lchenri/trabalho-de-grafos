@@ -42,6 +42,13 @@ class Grafo_Lista : public Grafo
         // Funções auxiliares
         void adicionar_aresta(int origem, int destino, int peso = 0);
         void explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado);
-
+        void dfs_articulacao(int u, std::unordered_map<int, bool>& visitado,
+                                std::unordered_map<int, int>& discovery, std::unordered_map<int, int>& low,
+                                std::unordered_map<int, int>& parent, bool& possui_articulacao, int& tempo);
+        void dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
+                            std::unordered_map<int, int>& discovery,
+                            std::unordered_map<int, int>& low,
+                            std::unordered_map<int, int>& parent,
+                            bool& possui_ponte, int& tempo);
 };
 #endif // GRAFO_LISTA_H
