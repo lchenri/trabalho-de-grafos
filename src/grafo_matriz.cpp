@@ -25,14 +25,12 @@ void Grafo_Matriz::inicializa_matriz() {
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 
-	if (eh_direcionado())
-	{
-		matriz_adjacencia[origem][destino] = peso;
+	if (eh_direcionado()) {
+		matriz_adjacencia[origem][destino] = peso_arestas ? peso : 1;
 		matriz_ligacoes[origem][destino] = true;
-	} else
-	{
-		matriz_adjacencia[origem][destino] = peso;
-		matriz_adjacencia[destino][origem] = peso;
+	} else {
+		matriz_adjacencia[origem][destino] = peso_arestas ? peso : 1;
+		matriz_adjacencia[destino][origem] = peso_arestas ? peso : 1;
 		matriz_ligacoes[origem][destino] = true;
 		matriz_ligacoes[destino][origem] = true;
 	}
@@ -64,9 +62,17 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	}
 
 	int origem, destino, peso;
-	while (arquivo_entrada >> origem >> destino >> peso) {
-		adicionar_aresta(origem, destino, peso);
+	if (peso_arestas) {
+		while (arquivo_entrada >> origem >> destino >> peso) {
+			adicionar_aresta(origem, destino, peso);
+		}
+		return;
 	}
+
+	while (arquivo_entrada >> origem >> destino) {
+		adicionar_aresta(origem, destino);
+	}
+
 }
 
 // Cria um novo grafo a partir de uma descricao
