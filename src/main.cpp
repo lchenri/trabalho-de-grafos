@@ -54,6 +54,25 @@ std::string debug_matriz_ligacoes(const std::vector<std::vector<bool>>& matriz) 
     return result;
 }
 
+std::string debug_lista_adjacencia(const ListaVertices& vertices) {
+    std::string result;
+    NoVertice* atual = vertices.head;
+    while (atual) {
+        result += std::to_string(atual->id) + " -> ";
+        NoAresta* arestaAtual = atual->arestas;
+        while (arestaAtual) {
+            result += std::to_string(arestaAtual->destino);
+            arestaAtual = arestaAtual->prox;
+            if (arestaAtual) {
+                result += " -> ";
+            }
+        }
+        result += "\n";
+        atual = atual->prox;
+    }
+    return result;
+}
+
 int main(int argc, char *argv[])
 {
     if (!validar_argumentos(argc, argv))
@@ -76,6 +95,7 @@ int main(int argc, char *argv[])
             Grafo_Lista grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
+            std::string foo = "foo";
         }else {
             exibir_uso();
             return 1;
