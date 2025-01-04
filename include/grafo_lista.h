@@ -1,5 +1,7 @@
 #ifndef GRAFO_LISTA_H
 #define GRAFO_LISTA_H
+#include <unordered_map>
+
 #include "grafo.h"
 #include "lista_encadeada.h"
 
@@ -39,5 +41,7 @@ class Grafo_Lista : public Grafo
         void exibe_descricao() override;
         // Funções auxiliares
         void adicionar_aresta(int origem, int destino, int peso = 0);
+        void explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado);
+
 };
 #endif // GRAFO_LISTA_H

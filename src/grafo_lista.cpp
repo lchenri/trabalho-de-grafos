@@ -2,6 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <unordered_map>
 
 Grafo_Lista::Grafo_Lista() : num_vertices(0), num_arestas(0),
                              direcionado(false),
@@ -142,14 +143,50 @@ bool Grafo_Lista::eh_bipartido()
 
 int Grafo_Lista::n_conexo()
 {
-    // Implementar
-    return 1;
+    std::unordered_map<int, bool> visitado;
+    int componentes = 0;
+
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        if (!visitado[vertice->id]) {
+            componentes++;
+            explorar_componente(vertice->id, visitado);
+        }
+    }
+
+    return componentes;
 }
 
-int Grafo_Lista::get_grau()
+void Grafo_Lista::explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado)
 {
-    // Implementar
-    return 1;
+    visitado[vertice_id] = true;
+    NoVertice* verticeAtual = vertices.buscar_vertice(vertice_id);
+
+    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+        if (!visitado[aresta->destino]) {
+            explorar_componente(aresta->destino, visitado);
+        }
+    }
+}
+
+int Grafo_Lista::get_grau() {
+    int grau_max = 0;
+
+    NoVertice* verticeAtual = vertices.head;
+    while (verticeAtual) {
+        int grau_atual = 0;
+
+        NoAresta* arestaAtual = verticeAtual->arestas;
+        while (arestaAtual) {
+            ++grau_atual;
+            arestaAtual = arestaAtual->prox;
+        }
+
+        grau_max = std::max(grau_max, grau_atual);
+
+        verticeAtual = verticeAtual->prox;
+    }
+
+    return grau_max;
 }
 
 int Grafo_Lista::get_ordem()
@@ -178,10 +215,8 @@ bool Grafo_Lista::eh_completo()
     return true;
 }
 
-bool Grafo_Lista::eh_arvore()
-{
-    // Implementar
-    return true;
+bool Grafo_Lista::eh_arvore() {
+    return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
 bool Grafo_Lista::possui_articulacao()
