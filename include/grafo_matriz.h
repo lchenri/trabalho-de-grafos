@@ -37,6 +37,11 @@ public:
     bool possui_articulacao() override;
     bool possui_ponte() override;
     void carrega_grafo(const std::string &arquivo) override;
+
+    bool aresta_existe(int u, int v);
+
+    int get_grau_componente(int vertice);
+
     void novo_grafo(const std::string& descricao, std::string& arquivo) override;
     void exibe_descricao() override;
     // Funções auxiliares
