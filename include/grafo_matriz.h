@@ -2,6 +2,7 @@
 #define GRAFO_MATRIZ_H
 #include "grafo.h"
 #include <vector>
+#define MAX_VERTICES 100
 
 class Grafo_Matriz : public Grafo
 {
@@ -17,9 +18,9 @@ private:
     bool possui_ponte_flag;
     bool possui_articulacao_flag;
     int componentes_conexas;
-    std::vector<std::vector<int>> matriz_adjacencia;
-    std::vector<std::vector<bool>> matriz_ligacoes;
-    std::vector<int> pesos_vertices;
+    int matriz_adjacencia[MAX_VERTICES][MAX_VERTICES];
+    int matriz_ligacoes[MAX_VERTICES][MAX_VERTICES];
+    int pesos_vertices[MAX_VERTICES];
 
 public:
     Grafo_Matriz();

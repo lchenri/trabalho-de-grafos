@@ -19,12 +19,15 @@ Grafo_Matriz::~Grafo_Matriz() {}
 
 void Grafo_Matriz::inicializa_matriz() {
 	// Inicializa a matriz quadrada de tamanho num_vertices e atribui 0 para cada posição.
-	matriz_adjacencia.resize(num_vertices+1, std::vector<int>(num_vertices+1, 0));
-	matriz_ligacoes.resize(num_vertices+1, std::vector<bool>(num_vertices+1, false));
+	for (int i = 0; i <= num_vertices; ++i) {
+		for (int j = 0; j <= num_vertices; ++j) {
+			matriz_adjacencia[i][j] = 0;
+			matriz_ligacoes[i][j] = false;
+		}
+	}
 }
 
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
-
 	if (eh_direcionado()) {
 		matriz_adjacencia[origem][destino] = peso_arestas ? peso : 1;
 		matriz_ligacoes[origem][destino] = true;
@@ -34,7 +37,6 @@ void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 		matriz_ligacoes[origem][destino] = true;
 		matriz_ligacoes[destino][origem] = true;
 	}
-
 	num_arestas++;
 }
 
@@ -49,15 +51,16 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	arquivo_entrada >> num_vertices >> direcionado >> peso_vertices >> peso_arestas;
 	inicializa_matriz();
 
-	// TODO: implementar caso da aresta nao ser ponderada e tambem de ter vertices ponderados
 	if (peso_vertices) {
 		std::string linha;
 		std::getline(arquivo_entrada, linha); // lê até o final da linha
 		std::getline(arquivo_entrada, linha); // lê a linha com os pesos dos vértices
 		std::istringstream iss(linha);
 		int peso;
+		size_t pesoCount = 0;
 		while (iss >> peso) {
-			this->pesos_vertices.push_back(peso);
+			this->pesos_vertices[0] = peso;
+			pesoCount++;
 		}
 	}
 
