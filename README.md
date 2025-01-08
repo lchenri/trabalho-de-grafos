@@ -4,7 +4,7 @@
 
 - Nome do integrante 1: Lucas Henrique de Araujo Cardoso - 202135038
 - Nome do integrante 2: Pedro Lucas Botelho Freitas - 202135040
-- Nome do integrante 3: Julia Borges Baccari - 202135007
+- Nome do integrante 3: Julia Borges Beccari - 202135007
 
 ## Resumo do Projeto
 
