@@ -1,10 +1,7 @@
 #include "../include/grafo_lista.h"
 #include <fstream>
 #include <sstream>
-#include <stdexcept>
-#include <unordered_map>
 #include <iostream>
-#include <queue>
 
 Grafo_Lista::Grafo_Lista() : num_vertices(0), num_arestas(0),
                              direcionado(false),
@@ -285,7 +282,7 @@ void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int l
             parent[v] = u;
             dfs_articulacao(v, visitado, discovery, low, parent, possui_articulacao, tempo);
 
-            low[u] = min_int(low[u], low[v]);
+            low[u] = std::min(low[u], low[v]);
 
             if (parent[u] == -1 && filhos > 1) {
                 possui_articulacao = true;
@@ -296,7 +293,7 @@ void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int l
             }
         }
         else if (v != parent[u]) {
-            low[u] = min_int(low[u], discovery[v]);
+            low[u] = std::min(low[u], discovery[v]);
         }
     }
 }
@@ -333,40 +330,14 @@ bool Grafo_Lista::possui_articulacao() {
     return possui_articulacao_flag;
 }
 
-bool Grafo_Lista::possui_ponte()
-{
-    std::unordered_map<int, bool> visitado;
-    std::unordered_map<int, int> discovery;
-    std::unordered_map<int, int> low;
-    std::unordered_map<int, int> parent;
-    int tempo = 0;
-    bool possui_ponte = false;
-
-    // Inicializa todos os pais como -1 e visitado como falso
-    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        visitado[vertice->id] = false;
-        parent[vertice->id] = -1;
-    }
-
-    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        if (!visitado[vertice->id]) {
-            dfs_ponte(vertice->id, visitado, discovery, low, parent, possui_ponte, tempo);
-        }
-    }
-
-    return possui_ponte;
-}
-
-void Grafo_Lista::dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
-                            std::unordered_map<int, int>& discovery,
-                            std::unordered_map<int, int>& low,
-                            std::unordered_map<int, int>& parent,
-                            bool& possui_ponte, int& tempo) {
+void Grafo_Lista::dfs_ponte(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_ponte, int& tempo) {
     visitado[u] = true;
     discovery[u] = low[u] = ++tempo;
 
     NoVertice* verticeAtual = vertices.buscar_vertice(u);
-    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+    if (!verticeAtual) return;
+
+    for (NoAresta* aresta = verticeAtual->arestas; aresta != nullptr; aresta = aresta->prox) {
         int v = aresta->destino;
 
         if (!visitado[v]) {
@@ -375,13 +346,46 @@ void Grafo_Lista::dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
 
             low[u] = std::min(low[u], low[v]);
 
+            // Verificar se a aresta (u-v) é uma ponte
             if (low[v] > discovery[u]) {
                 possui_ponte = true;
             }
-        } else if (v != parent[u]) {
+        }
+        else if (v != parent[u]) {
             low[u] = std::min(low[u], discovery[v]);
         }
     }
+}
+
+bool Grafo_Lista::possui_ponte() {
+    bool* visitado = new bool[num_vertices + 1];
+    int* discovery = new int[num_vertices + 1];
+    int* low = new int[num_vertices + 1];
+    int* parent = new int[num_vertices + 1];
+
+    for (int i = 0; i <= num_vertices; ++i) {
+        visitado[i] = false;
+        discovery[i] = -1;
+        low[i] = -1;
+        parent[i] = -1;
+    }
+
+    bool possui_ponte = false;
+    int tempo = 0;
+
+    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
+        int u = vertice->id;
+        if (!visitado[u]) {
+            dfs_ponte(u, visitado, discovery, low, parent, possui_ponte, tempo);
+        }
+    }
+
+    delete[] visitado;
+    delete[] discovery;
+    delete[] low;
+    delete[] parent;
+
+    return possui_ponte;
 }
 
 void Grafo_Lista::exibe_descricao()
