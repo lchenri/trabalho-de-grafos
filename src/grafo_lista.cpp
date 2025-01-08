@@ -180,9 +180,20 @@ bool Grafo_Lista::eh_bipartido() {
     return true;
 }
 
-int Grafo_Lista::n_conexo()
-{
-    std::unordered_map<int, bool> visitado;
+void Grafo_Lista::explorar_componente(int vertice_id, bool visitado[]) {
+    visitado[vertice_id] = true;
+    NoVertice* verticeAtual = vertices.buscar_vertice(vertice_id);
+    if (!verticeAtual) return;
+
+    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+        if (!visitado[aresta->destino]) {
+            explorar_componente(aresta->destino, visitado);
+        }
+    }
+}
+
+int Grafo_Lista::n_conexo() {
+    bool* visitado = new bool[num_vertices + 1]();
     int componentes = 0;
 
     for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
@@ -192,19 +203,8 @@ int Grafo_Lista::n_conexo()
         }
     }
 
+    delete[] visitado;
     return componentes;
-}
-
-void Grafo_Lista::explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado)
-{
-    visitado[vertice_id] = true;
-    NoVertice* verticeAtual = vertices.buscar_vertice(vertice_id);
-
-    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
-        if (!visitado[aresta->destino]) {
-            explorar_componente(aresta->destino, visitado);
-        }
-    }
 }
 
 int Grafo_Lista::get_grau() {
@@ -266,40 +266,18 @@ bool Grafo_Lista::eh_arvore() {
     return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
-bool Grafo_Lista::possui_articulacao() {
-    std::unordered_map<int, bool> visitado;
-    std::unordered_map<int, int> discovery;
-    std::unordered_map<int, int> low;
-    std::unordered_map<int, int> parent;
-    bool possui_articulacao = false;
-    int tempo = 0;
-
-    // Inicializa todos os pais como -1 e visitado como falso
-    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        visitado[vertice->id] = false;
-        parent[vertice->id] = -1;
-    }
-
-    for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        if (!visitado[vertice->id]) {
-            dfs_articulacao(vertice->id, visitado, discovery, low, parent, possui_articulacao, tempo);
-        }
-    }
-
-    return possui_articulacao;
-}
-
-void Grafo_Lista::dfs_articulacao(int u, std::unordered_map<int, bool>& visitado,
-                                  std::unordered_map<int, int>& discovery,
-                                  std::unordered_map<int, int>& low,
-                                  std::unordered_map<int, int>& parent,
-                                  bool& possui_articulacao, int& tempo) {
+void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_articulacao, int& tempo) {
     visitado[u] = true;
     discovery[u] = low[u] = ++tempo;
     int filhos = 0;
 
     NoVertice* verticeAtual = vertices.buscar_vertice(u);
-    for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
+    if (!verticeAtual) {
+        std::cerr << "Vértice " << u << " não encontrado durante a DFS.\n";
+        return;
+    }
+
+    for (NoAresta* aresta = verticeAtual->arestas; aresta != nullptr; aresta = aresta->prox) {
         int v = aresta->destino;
 
         if (!visitado[v]) {
@@ -307,21 +285,52 @@ void Grafo_Lista::dfs_articulacao(int u, std::unordered_map<int, bool>& visitado
             parent[v] = u;
             dfs_articulacao(v, visitado, discovery, low, parent, possui_articulacao, tempo);
 
-            low[u] = std::min(low[u], low[v]);
+            low[u] = min_int(low[u], low[v]);
 
-            // Caso 1: u é raiz e tem mais de um filho
             if (parent[u] == -1 && filhos > 1) {
                 possui_articulacao = true;
             }
 
-            // Caso 2: u não é raiz e low[v] >= discovery[u]
             if (parent[u] != -1 && low[v] >= discovery[u]) {
                 possui_articulacao = true;
             }
-        } else if (v != parent[u]) {
-            low[u] = std::min(low[u], discovery[v]);
+        }
+        else if (v != parent[u]) {
+            low[u] = min_int(low[u], discovery[v]);
         }
     }
+}
+
+bool Grafo_Lista::possui_articulacao() {
+    bool* visitado = new bool[num_vertices + 1];
+    int* discovery = new int[num_vertices + 1];
+    int* low = new int[num_vertices + 1];
+    int* parent = new int[num_vertices + 1];
+
+    for (int i = 0; i <= num_vertices; ++i) {
+        visitado[i] = false;
+        discovery[i] = -1;
+        low[i] = -1;
+        parent[i] = -1;
+    }
+
+    bool possui_articulacao_flag = false;
+    int tempo = 0;
+
+
+    for (NoVertice* vertice = vertices.head; vertice != nullptr; vertice = vertice->prox) {
+        int u = vertice->id;
+        if (!visitado[u]) {
+            dfs_articulacao(u, visitado, discovery, low, parent, possui_articulacao_flag, tempo);
+        }
+    }
+
+    delete[] visitado;
+    delete[] discovery;
+    delete[] low;
+    delete[] parent;
+
+    return possui_articulacao_flag;
 }
 
 bool Grafo_Lista::possui_ponte()

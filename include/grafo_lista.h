@@ -21,6 +21,10 @@ class Grafo_Lista : public Grafo
         bool possui_articulacao_flag;
         int componentes_conexas;
 
+    int min_int(int a, int b) {
+        return (a < b) ? a : b;
+    }
+
     public:
         Grafo_Lista();
         ~Grafo_Lista();
@@ -41,10 +45,8 @@ class Grafo_Lista : public Grafo
         void exibe_descricao() override;
         // Funções auxiliares
         void adicionar_aresta(int origem, int destino, int peso = 0);
-        void explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado);
-        void dfs_articulacao(int u, std::unordered_map<int, bool>& visitado,
-                                std::unordered_map<int, int>& discovery, std::unordered_map<int, int>& low,
-                                std::unordered_map<int, int>& parent, bool& possui_articulacao, int& tempo);
+        void explorar_componente(int vertice_id, bool visitado[]);
+        void dfs_articulacao(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_articulacao, int& tempo);
         void dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
                             std::unordered_map<int, int>& discovery,
                             std::unordered_map<int, int>& low,
