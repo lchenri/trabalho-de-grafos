@@ -1,7 +1,6 @@
 #ifndef GRAFO_MATRIZ_H
 #define GRAFO_MATRIZ_H
 #include "grafo.h"
-#include <vector>
 #define MAX_VERTICES 100
 
 class Grafo_Matriz : public Grafo
@@ -39,6 +38,11 @@ public:
     bool possui_ponte() override;
     void carrega_grafo(const std::string &arquivo) override;
     void novo_grafo(const std::string& descricao, std::string& arquivo) override;
+    bool verifica_grau(int vertice, int grau_max) override;
+    bool gerar_bipartido(int grau_max) override;
+    void gerar_completo(int grau_max) override;
+    void gerar_arvore(int grau_max) override;
+    bool verifica_restricoes(int grau_max, int componentes, bool ponte_flag, bool articulacao_flag) override;
     void exibe_descricao() override;
     // Funções auxiliares
     void inicializa_matriz();
