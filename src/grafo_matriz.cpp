@@ -121,21 +121,22 @@ bool Grafo_Matriz::eh_bipartido() {
 	return bipartido;
 }
 
-int Grafo_Matriz::n_conexo() {
-	std::vector<bool> visitado(num_vertices + 1, false);
-	std::function<void(int)> dfs = [&](int v) {
-		visitado[v] = true;
-		for (int u = 1; u <= num_vertices; ++u) {
-			if (matriz_ligacoes[v][u] && !visitado[u]) {
-				dfs(u);
-			}
-		}
-	};
+void Grafo_Matriz::dfs(int v, bool visitado[]) {
+    visitado[v] = true;
+    for (int u = 1; u <= num_vertices; ++u) {
+        if (matriz_ligacoes[v][u] && !visitado[u]) {
+            dfs(u, visitado);
+        }
+    }
+}
 
+int Grafo_Matriz::n_conexo() {
+	bool visitado[num_vertices + 1] = {false};
 	int componentes = 0;
+
 	for (int i = 1; i <= num_vertices; ++i) {
 		if (!visitado[i]) {
-			dfs(i);
+			dfs(i, visitado);
 			componentes++;
 		}
 	}
@@ -144,8 +145,8 @@ int Grafo_Matriz::n_conexo() {
 	return componentes_conexas;
 }
 
+
 int Grafo_Matriz::get_grau() {
-	// Todo Revisar
 	// Retorna o grau máximo do grafo
 	int grau_max = 0;
 	for (int i = 1; i <= num_vertices; i++) {

@@ -43,5 +43,6 @@ public:
     // Funções auxiliares
     void inicializa_matriz();
     void adicionar_aresta(int origem, int destino, int peso = 0);
+    void dfs(int v, bool visitado[]);
 };
 #endif //GRAFO_MATRIZ_H
