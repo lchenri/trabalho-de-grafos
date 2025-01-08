@@ -454,27 +454,38 @@ bool Grafo_Matriz::possui_ponte() {
 
 
 void Grafo_Matriz::exibe_descricao() {
-
 	std::cout << "Grau: " << get_grau() << std::endl;
-
 	std::cout << "Ordem: " << get_ordem() << std::endl;
-
 	std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Componentes conexas: " << n_conexo() << std::endl;
-
 	std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nao")<< std::endl;
-
 	std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Completo: " << (eh_completo() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Arvore: " << (eh_arvore() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Nao") << std::endl;
-
 	std::cout << "Vertice de Articulacao: " << (possui_articulacao() ? "Sim" : "Nao") << std::endl;
 
+	// Gera o arquivo de descrição com as informações
+    std::ofstream arquivo_descricao("descricao_saida.txt");
+    if (!arquivo_descricao.is_open())
+    {
+        std::cerr << "Erro ao abrir o arquivo de descrição." << std::endl;
+        return;
+    }
+
+    // Escreve as informações no arquivo
+    arquivo_descricao << "Grau: " << get_grau() << std::endl;
+    arquivo_descricao << "Ordem: " << get_ordem() << std::endl;
+    arquivo_descricao << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Componentes conexas: " << n_conexo() << std::endl;
+    arquivo_descricao << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Completo: " << (eh_completo() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Bipartido: " << (eh_bipartido() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Arvore: " << (eh_arvore() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Nao") << std::endl;
+    arquivo_descricao << "Vertice de Articulacao: " << (possui_articulacao() ? "Sim" : "Nao") << std::endl;
+
+    arquivo_descricao.close();
 }
