@@ -1,5 +1,7 @@
 #include <iostream>
-#include <cstring>
+#include <string>
+#include <fstream>
+#include <vector>
 
 #include "../include/grafo_lista.h"
 #include "../include/grafo_matriz.h"
@@ -42,25 +44,26 @@ std::string debug_matriz_adjacencia(const std::vector<std::vector<int>>& matriz)
     return result;
 }
 
-std::string debug_matriz_ligacoes(const std::vector<std::vector<bool>>& matriz) {
+std::string debug_matriz_ligacoes(int matriz[MAX_VERTICES][MAX_VERTICES], int num_arestas) {
     std::string result;
-    for (size_t i = 1; i < matriz.size(); ++i) {
-        const auto& linha = matriz[i];
-        for (size_t j = 1; j < linha.size(); j++) {
-            result += std::to_string(linha[j]) + " ";
+    for (int i = 1; i < MAX_VERTICES; ++i) {
+        for (int j = 1; j < MAX_VERTICES; ++j) {
+            result += std::to_string(matriz[i][j]) + " ";
         }
         result += "\n";
     }
+    result += "Número de arestas: " + std::to_string(num_arestas) + "\n";
     return result;
 }
 
-std::string debug_lista_adjacencia(const ListaVertices& vertices) {
+std::string debug_lista_adjacencia(const ListaVertices& vertices, int num_arestas) {
     std::string result;
     NoVertice* atual = vertices.head;
     while (atual) {
         result += std::to_string(atual->id) + " -> ";
         NoAresta* arestaAtual = atual->arestas;
-        while (arestaAtual) {
+        while (arestaAtual)
+        {
             result += std::to_string(arestaAtual->destino);
             arestaAtual = arestaAtual->prox;
             if (arestaAtual) {
@@ -70,6 +73,7 @@ std::string debug_lista_adjacencia(const ListaVertices& vertices) {
         result += "\n";
         atual = atual->prox;
     }
+    result += "Número de arestas: " + std::to_string(num_arestas) + "\n";
     return result;
 }
 

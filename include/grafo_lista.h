@@ -1,6 +1,6 @@
 #ifndef GRAFO_LISTA_H
 #define GRAFO_LISTA_H
-#include <unordered_map>
+#define MAX_VERTICES 100
 
 #include "grafo.h"
 #include "lista_encadeada.h"
@@ -20,6 +20,7 @@ class Grafo_Lista : public Grafo
         bool possui_ponte_flag;
         bool possui_articulacao_flag;
         int componentes_conexas;
+        int pesos_vertices[MAX_VERTICES];
 
     public:
         Grafo_Lista();
@@ -38,17 +39,16 @@ class Grafo_Lista : public Grafo
         bool possui_ponte() override;
         void carrega_grafo(const std::string &arquivo) override;
         void novo_grafo(const std::string& descricao, std::string& arquivo) override;
+        bool verifica_grau(int vertice, int grau_max) override;
+        bool gerar_bipartido(int grau_max) override;
+        void gerar_completo(int grau_max) override;
+        void gerar_arvore(int grau_max) override;
+        bool verifica_restricoes(int grau_max, int componentes, bool ponte_flag, bool articulacao_flag) override;
         void exibe_descricao() override;
         // Funções auxiliares
         void adicionar_aresta(int origem, int destino, int peso = 0);
-        void explorar_componente(int vertice_id, std::unordered_map<int, bool>& visitado);
-        void dfs_articulacao(int u, std::unordered_map<int, bool>& visitado,
-                                std::unordered_map<int, int>& discovery, std::unordered_map<int, int>& low,
-                                std::unordered_map<int, int>& parent, bool& possui_articulacao, int& tempo);
-        void dfs_ponte(int u, std::unordered_map<int, bool>& visitado,
-                            std::unordered_map<int, int>& discovery,
-                            std::unordered_map<int, int>& low,
-                            std::unordered_map<int, int>& parent,
-                            bool& possui_ponte, int& tempo);
+        void explorar_componente(int vertice_id, bool visitado[]);
+        void dfs_articulacao(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_articulacao, int& tempo);
+        void dfs_ponte(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_ponte, int& tempo);
 };
 #endif // GRAFO_LISTA_H
