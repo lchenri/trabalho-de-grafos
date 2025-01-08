@@ -44,5 +44,6 @@ public:
     void inicializa_matriz();
     void adicionar_aresta(int origem, int destino, int peso = 0);
     void dfs(int v, bool visitado[]);
+    void dfs(int u, bool visitado[], int discovery[], int low[], int parent[], int& tempo, bool& possui_articulacao);
 };
 #endif //GRAFO_MATRIZ_H

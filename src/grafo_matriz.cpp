@@ -1,9 +1,7 @@
 #include "../include/grafo_matriz.h"
 #include <fstream>
 #include <sstream>
-#include <queue>
 #include <iostream>
-#include <functional>
 
 Grafo_Matriz::Grafo_Matriz() : num_vertices(0), num_arestas(0), direcionado(false),
 
@@ -201,48 +199,57 @@ bool Grafo_Matriz::eh_arvore() {
 	return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
-bool Grafo_Matriz::possui_articulacao() {
-	std::vector<bool> visitado(num_vertices + 1, false);
-	std::vector<int> discovery(num_vertices + 1, -1);
-	std::vector<int> low(num_vertices + 1, -1);
-	std::vector<int> parent(num_vertices + 1, -1);
-	bool possui_articulacao = false;
+void Grafo_Matriz::dfs(int u, bool visitado[], int discovery[], int low[], int parent[], int& tempo, bool& possui_articulacao) {
+	visitado[u] = true;
+	discovery[u] = low[u] = ++tempo;
+	int filhos = 0;
 
-	std::function<void(int, int&)> dfs = [&](int u, int& tempo) {
-		visitado[u] = true;
-		discovery[u] = low[u] = ++tempo;
-		int filhos = 0;
+	for (int v = 1; v <= num_vertices; ++v) {
+		if (matriz_ligacoes[u][v]) {
+			if (!visitado[v]) {
+				filhos++;
+				parent[v] = u;
+				dfs(v, visitado, discovery, low, parent, tempo, possui_articulacao);
 
-		for (int v = 1; v <= num_vertices; ++v) {
-			if (matriz_ligacoes[u][v]) {
-				if (!visitado[v]) {
-					filhos++;
-					parent[v] = u;
-					dfs(v, tempo);
+				low[u] = std::min(low[u], low[v]);
 
-					low[u] = std::min(low[u], low[v]);
-
-					if (parent[u] == -1 && filhos > 1)
-						possui_articulacao = true;
-					if (parent[u] != -1 && low[v] >= discovery[u])
-						possui_articulacao = true;
-				} else if (v != parent[u]) {
-					low[u] = std::min(low[u], discovery[v]);
-				}
+				if (parent[u] == -1 && filhos > 1)
+					possui_articulacao = true;
+				if (parent[u] != -1 && low[v] >= discovery[u])
+					possui_articulacao = true;
+			} else if (v != parent[u]) {
+				low[u] = std::min(low[u], discovery[v]);
 			}
 		}
-	};
+	}
+}
 
+
+bool Grafo_Matriz::possui_articulacao() {
+	bool visitado[num_vertices + 1] = {false};
+	int discovery[num_vertices + 1];
+	int low[num_vertices + 1];
+	int parent[num_vertices + 1];
+
+	for (int i = 0; i <= num_vertices; ++i) {
+		discovery[i] = -1;
+		low[i] = -1;
+		parent[i] = -1;
+	}
+
+	bool possui_articulacao = false;
 	int tempo = 0;
+
 	for (int i = 1; i <= num_vertices; ++i) {
 		if (!visitado[i]) {
-			dfs(i, tempo);
+			dfs(i, visitado, discovery, low, parent, tempo, possui_articulacao);
 		}
 	}
 
 	possui_articulacao_flag = possui_articulacao;
 	return possui_articulacao;
 }
+
 
 bool Grafo_Matriz::possui_ponte() {
 	int componentes_iniciais = n_conexo();
