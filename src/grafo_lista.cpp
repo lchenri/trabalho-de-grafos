@@ -137,36 +137,46 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
 }
 
 // Implementação das funções abstratas
-bool Grafo_Lista::eh_bipartido()
-{
-    if (num_vertices == 0) return true;
+bool Grafo_Lista::eh_bipartido() {
+    if (num_vertices == 0)
+        return true;
 
-    std::unordered_map<int, int> cores;
-    std::queue<int> fila;
+    int* cores = new int[num_vertices + 1];
+    int* fila = new int[num_vertices + 1];
+    int inicio = 0, fim = 0;
+
+    for (int i = 0; i <= num_vertices; ++i) {
+        cores[i] = -1;
+    }
 
     for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        if (cores.find(vertice->id) == cores.end()) {
+        if (cores[vertice->id] == -1) {
             cores[vertice->id] = 0;
-            fila.push(vertice->id);
+            fila[fim++] = vertice->id;
 
-            while (!fila.empty()) {
-                int atual = fila.front();
-                fila.pop();
+            while (inicio != fim) {
+                int atual = fila[inicio++];
                 int corAtual = cores[atual];
-
                 NoVertice* verticeAtual = vertices.buscar_vertice(atual);
+
                 for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
                     int destino = aresta->destino;
-                    if (cores.find(destino) == cores.end()) {
+
+                    if (cores[destino] == -1) {
                         cores[destino] = 1 - corAtual;
-                        fila.push(destino);
+                        fila[fim++] = destino;
                     } else if (cores[destino] == corAtual) {
+                        delete[] cores;
+                        delete[] fila;
                         return false;
                     }
                 }
             }
         }
     }
+
+    delete[] cores;
+    delete[] fila;
     return true;
 }
 
