@@ -42,5 +42,9 @@ public:
     // Funções auxiliares
     void inicializa_matriz();
     void adicionar_aresta(int origem, int destino, int peso = 0);
+    bool verifica_restricoes(int grau_max, int componentes, bool ponte_flag, bool articulacao_flag);
+    void gerar_completo(int grau_max);
+    bool gerar_bipartido(int grau_max);
+    bool verifica_grau(int vertice, int grau_max);
 };
 #endif //GRAFO_MATRIZ_H
