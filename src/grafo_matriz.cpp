@@ -87,24 +87,27 @@ void Grafo_Matriz::novo_grafo(const std::string& descricao, std::string& arquivo
 
 // Implementa��o das fun��es abstratas
 bool Grafo_Matriz::eh_bipartido() {
+	int cor[num_vertices + 1];
+	for (int i = 0; i <= num_vertices; ++i) {
+		cor[i] = -1;
+	}
 
-	std::vector<int> cor(num_vertices + 1, -1);
-	std::queue<int> fila;
+	int fila[num_vertices + 1];
+	int inicio = 0, fim = 0;
 
 	for (int i = 1; i <= num_vertices; ++i) {
 		if (cor[i] == -1) {
 			cor[i] = 0;
-			fila.push(i);
+			fila[fim++] = i;
 
-			while (!fila.empty()) {
-				int u = fila.front();
-				fila.pop();
+			while (inicio != fim) {
+				int u = fila[inicio++];
 
 				for (int v = 1; v <= num_vertices; ++v) {
 					if (matriz_ligacoes[u][v]) {
 						if (cor[v] == -1) {
 							cor[v] = 1 - cor[u];
-							fila.push(v);
+							fila[fim++] = v;
 						} else if (cor[v] == cor[u]) {
 							bipartido = false;
 							return bipartido;
@@ -114,10 +117,8 @@ bool Grafo_Matriz::eh_bipartido() {
 			}
 		}
 	}
-
 	bipartido = true;
 	return bipartido;
-
 }
 
 int Grafo_Matriz::n_conexo() {
