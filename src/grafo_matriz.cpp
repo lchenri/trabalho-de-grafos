@@ -232,14 +232,15 @@ void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo
 	}
 
     bool sucesso = false;
-    if (bipartido_flag) {
+	if(arvore_flag){
+		gerar_arvore(grau_max);
+    	sucesso = eh_arvore();
+	}
+    else if (bipartido_flag) {
         sucesso = gerar_bipartido(grau_max);
     } else if (completo_flag) {
         gerar_completo(grau_max);
         sucesso = true;
-    } else if (arvore_flag) {
-		gerar_arvore(grau_max);
-    	sucesso = eh_arvore();
     } else {
     	std::random_device rd;
     	std::mt19937 gen(rd());

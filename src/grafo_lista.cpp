@@ -273,12 +273,13 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
 
     bool sucesso = false;
 
-    if (completo_flag) {
-        gerar_completo(grau_max);
-        sucesso = eh_completo();
-    } else if (arvore_flag) {
+    if (arvore_flag){
         gerar_arvore(grau_max);
         sucesso = eh_arvore();
+    }
+    else if (completo_flag) {
+        gerar_completo(grau_max);
+        sucesso = eh_completo();
     } else if (bipartido_flag) {
         sucesso = gerar_bipartido(grau_max);
     } else {
