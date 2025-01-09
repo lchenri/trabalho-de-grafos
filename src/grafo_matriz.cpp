@@ -466,7 +466,6 @@ void Grafo_Matriz::exibe_descricao() {
 	std::cout << "Aresta Ponte: " << (possui_ponte() ? "Sim" : "Nao") << std::endl;
 	std::cout << "Vertice de Articulacao: " << (possui_articulacao() ? "Sim" : "Nao") << std::endl;
 
-	// Gera o arquivo de descrição com as informações
     std::ofstream arquivo_descricao("descricao_saida.txt");
     if (!arquivo_descricao.is_open())
     {
@@ -474,7 +473,6 @@ void Grafo_Matriz::exibe_descricao() {
         return;
     }
 
-    // Escreve as informações no arquivo
     arquivo_descricao << "Grau: " << get_grau() << std::endl;
     arquivo_descricao << "Ordem: " << get_ordem() << std::endl;
     arquivo_descricao << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nao") << std::endl;
