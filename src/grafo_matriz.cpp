@@ -4,20 +4,29 @@
 #include <iostream>
 #include <random>
 
+/**
+* @file grafo_matriz.cpp
+* @brief Função auxiliar do n_conexo para explorar um componente conexo de cada vez
+*/
+
+/**
+* @brief Construtor padrão da classe grafo_matriz
+*/
 Grafo_Matriz::Grafo_Matriz() : num_vertices(0), num_arestas(0), direcionado(false),
-
                                peso_vertices(false), peso_arestas(false), completo(false), bipartido(false),
-
                                arvore(false), possui_ponte_flag(false), possui_articulacao_flag(false),
-
                                componentes_conexas(0) {
 }
 
-// Destructor
+/**
+* @brief Destrutor padrão da classe grafo_matriz
+*/
 Grafo_Matriz::~Grafo_Matriz() {}
 
+/**
+* @brief Função para inicializar a matriz de adjacência
+*/
 void Grafo_Matriz::inicializa_matriz() {
-	// Inicializa a matriz quadrada de tamanho num_vertices e atribui 0 para cada posição.
 	for (int i = 0; i <= num_vertices; ++i) {
 		for (int j = 0; j <= num_vertices; ++j) {
 			matriz_adjacencia[i][j] = 0;
@@ -26,6 +35,12 @@ void Grafo_Matriz::inicializa_matriz() {
 	}
 }
 
+/**
+* @brief Função para adicionar uma aresta ao grafo
+* @param origem Vértice de origem da aresta
+* @param destino Vértice de destino da aresta
+* @param peso Peso da aresta
+*/
 void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 	if (eh_direcionado()) {
 		matriz_adjacencia[origem][destino] = peso_arestas ? peso : 1;
@@ -39,12 +54,15 @@ void Grafo_Matriz::adicionar_aresta(int origem, int destino, int peso) {
 	num_arestas++;
 }
 
-// Carrega o grafo a partir de um arquivo
+/**
+* @brief Função para carregar um grafo a partir de um arquivo
+* @param arquivo Nome do arquivo de entrada
+*/
 void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 	std::ifstream arquivo_entrada(arquivo);
 
 	if (!arquivo_entrada.is_open()) {
-		std::cerr << "Não foi possível abrir o arquivo." << std::endl;
+		std::cerr << "Nao foi possivel abrir o arquivo." << std::endl;
 	}
 
 	arquivo_entrada >> num_vertices >> direcionado >> peso_vertices >> peso_arestas;
@@ -52,8 +70,8 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 
 	if (peso_vertices) {
 		std::string linha;
-		std::getline(arquivo_entrada, linha); // lê até o final da linha
-		std::getline(arquivo_entrada, linha); // lê a linha com os pesos dos vértices
+		std::getline(arquivo_entrada, linha);
+		std::getline(arquivo_entrada, linha);
 		std::istringstream iss(linha);
 		int peso;
 		size_t pesoCount = 0;
@@ -77,6 +95,12 @@ void Grafo_Matriz::carrega_grafo(const std::string& arquivo) {
 
 }
 
+/**
+* @brief Função para verificar o grau do grafo
+* @param vertice Vértice a ser verificado
+* @param grau_max Grau máximo permitido
+* @return Grau do vértice - true: grau menor que o máximo, false: caso contrário
+*/
 bool Grafo_Matriz::verifica_grau(int vertice, int grau_max) {
 	int grau_atual = 0;
 	for (int i = 1; i <= num_vertices; ++i) {
@@ -86,18 +110,19 @@ bool Grafo_Matriz::verifica_grau(int vertice, int grau_max) {
 	return grau_atual < grau_max;
 }
 
-// Função auxiliar para criar um grafo bipartido
+/**
+* @brief Função para gerar um grafo bipartido
+* @param grau_max Grau máximo permitido
+* @return true: se foi possível criar o grafo bipartido, false: caso contrário
+*/
 bool Grafo_Matriz::gerar_bipartido(int grau_max) {
-
-	// Aloca arrays dinâmicos para as partições
-	int tamanho1 = (num_vertices + 1) / 2; // Partição 1 (metade dos vértices, arredondada para cima)
-	int tamanho2 = num_vertices / 2;       // Partição 2 (restante dos vértices)
+	int tamanho1 = (num_vertices + 1) / 2;
+	int tamanho2 = num_vertices / 2;
 	int* particao1 = new int[tamanho1];
 	int* particao2 = new int[tamanho2];
 
 	int indice1 = 0, indice2 = 0;
 
-	// Dividir vértices em duas partições
 	for (int i = 1; i <= num_vertices; ++i) {
 		if (i % 2 == 0) {
 			particao1[indice1++] = i;
@@ -106,28 +131,27 @@ bool Grafo_Matriz::gerar_bipartido(int grau_max) {
 		}
 	}
 
-	// Conectar vértices entre partições respeitando o grau máximo
-	for (int i = 0; i < indice1; ++i) { // Itera sobre particao1
-		for (int j = 0; j < indice2; ++j) { // Itera sobre particao2
+	for (int i = 0; i < indice1; ++i) {
+		for (int j = 0; j < indice2; ++j) {
 			int u = particao1[i];
 			int v = particao2[j];
 			if (verifica_grau(u, grau_max) && verifica_grau(v, grau_max)) {
 				adicionar_aresta(u, v, peso_arestas ? rand() % 20 - 10 : 1);
-				std::cout << "u: " << u << " v: " << v << std::endl;
 			}
 		}
 	}
 
-	// Libera a memória alocada para os arrays
 	delete[] particao1;
 	delete[] particao2;
 
-	// Verifica se o grafo gerado é bipartido
 	return eh_bipartido();
 }
 
 
-// Função auxiliar para criar um grafo completo
+/**
+* @brief Função para gerar um grafo completo
+* @param grau_max Grau máximo permitido
+*/
 void Grafo_Matriz::gerar_completo(int grau_max) {
 	for (int i = 1; i <= num_vertices; ++i) {
 		for (int j = 1; j <= num_vertices; ++j) {
@@ -137,6 +161,10 @@ void Grafo_Matriz::gerar_completo(int grau_max) {
 	}
 }
 
+/**
+* @brief Função para gerar uma árvore
+* @param grau_max Grau máximo permitido
+*/
 void Grafo_Matriz::gerar_arvore(int grau_max) {
 	for (int i = 2; i <= num_vertices; ++i) {
 		int origem;
@@ -149,6 +177,14 @@ void Grafo_Matriz::gerar_arvore(int grau_max) {
 	}
 }
 
+/**
+* @brief Função para verificar se o grafo atende às restrições
+* @param grau_max Grau máximo permitido
+* @param componentes Número de componentes conexas
+* @param ponte_flag Flag para verificar se o grafo possui pontes
+* @param articulacao_flag Flag para verificar se o grafo possui vértices de articulação
+* @return true: se o grafo atende às restrições, false: caso contrário
+*/
 bool Grafo_Matriz::verifica_restricoes(int grau_max, int componentes, bool ponte_flag, bool articulacao_flag) {
 	if (n_conexo() != componentes) return false;
 	if (ponte_flag && !possui_ponte()) return false;
@@ -159,17 +195,19 @@ bool Grafo_Matriz::verifica_restricoes(int grau_max, int componentes, bool ponte
 	return true;
 }
 
-
-// Função principal
+/**
+* @brief Função para gerar um novo grafo com base em um arquivo de descrição e salvar em um arquivo de saída
+* @param descricao Arquivo de descrição do grafo
+* @param arquivo Arquivo de saída
+* @warning O caso trivial, diferente dos demais, usa força bruta para gerar um grafo que atenda às restrições, o que pode fazer a geração demorar mais tempo
+*/
 void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo) {
-    // Abre o arquivo de descrição
     std::ifstream arquivo_descricao(descricao);
     if (!arquivo_descricao.is_open()) {
-        std::cerr << "Não foi possível abrir o arquivo de descrição." << std::endl;
+        std::cerr << "Nao foi possivel abrir o arquivo de descricao." << std::endl;
         return;
     }
 
-    // Lê os parâmetros do arquivo
     int grau_max, ordem, direcionado_flag, componentes, vertices_ponderados_flag,
         arestas_ponderadas_flag, completo_flag, bipartido_flag, arvore_flag,
         ponte_flag, articulacao_flag;
@@ -179,7 +217,6 @@ void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo
     arquivo_descricao >> completo_flag >> bipartido_flag >> arvore_flag;
     arquivo_descricao >> ponte_flag >> articulacao_flag;
 
-    // Inicializa atributos
     num_vertices = ordem;
     num_arestas = 0;
     direcionado = direcionado_flag;
@@ -188,14 +225,12 @@ void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo
 
     inicializa_matriz();
 
-	// Gera pesos dos vértices, se necessário
 	if (peso_vertices) {
 		for (int i = 1; i <= num_vertices; ++i) {
 			pesos_vertices[i] = rand() % 10 + 1;
 		}
 	}
 
-    // Gera o grafo com base nas restrições
     bool sucesso = false;
     if (bipartido_flag) {
         sucesso = gerar_bipartido(grau_max);
@@ -206,28 +241,30 @@ void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo
 		gerar_arvore(grau_max);
     	sucesso = eh_arvore();
     } else {
-    	for (int i = 1; i <= num_vertices; ++i) {
-    		for (int j = i + 1; j <= num_vertices; ++j) {
-    			if (verifica_grau(i, grau_max) && verifica_grau(j, grau_max)) {
-    				adicionar_aresta(i, j, peso_arestas ? rand() % 20 - 10 : 1);
-    				if (direcionado) {
-    					adicionar_aresta(j, i, peso_arestas ? rand() % 20 - 10 : 1);
-    				}
-    			}
+    	std::random_device rd;
+    	std::mt19937 gen(rd());
+    	std::uniform_int_distribution<> dist(1, num_vertices);
+    	std::uniform_int_distribution<> peso_dist(-10, 10);
+
+    	while (!verifica_restricoes(grau_max, componentes, ponte_flag, articulacao_flag)) {
+    		int origem = dist(gen);
+    		int destino = dist(gen);
+    		if (origem != destino && verifica_grau(origem, grau_max) && verifica_grau(destino, grau_max)) {
+    			int peso = peso_arestas ? peso_dist(gen) : 1;
+    			adicionar_aresta(origem, destino, peso);
     		}
     	}
     	sucesso = true;
     }
 
     if (!sucesso) {
-        std::cerr << "Não foi possível gerar o grafo com as restrições fornecidas." << std::endl;
+        std::cerr << "Nao foi possivel gerar o grafo com as restricoes fornecidas." << std::endl;
         return;
     }
 
-    // Salva o grafo no arquivo de saída
     std::ofstream arquivo_saida(arquivo);
     if (!arquivo_saida.is_open()) {
-        std::cerr << "Não foi possível abrir o arquivo de saída." << std::endl;
+        std::cerr << "Nao foi possivel abrir o arquivo de saida." << std::endl;
         return;
     }
 
@@ -253,10 +290,10 @@ void Grafo_Matriz::novo_grafo(const std::string &descricao, std::string &arquivo
     }
 }
 
-
-//----------------------------------------------------------------------------------------------------------------------
-
-// Implementa��o das fun��es abstratas
+/**
+* @brief Função para verificar se o grafo é bipartido
+* @return true: se o grafo é bipartido, false: caso contrário
+*/
 bool Grafo_Matriz::eh_bipartido() {
 	int cor[num_vertices + 1];
 	for (int i = 0; i <= num_vertices; ++i) {
@@ -292,6 +329,11 @@ bool Grafo_Matriz::eh_bipartido() {
 	return bipartido;
 }
 
+/**
+* @brief Função auxiliar de busca por profundidade para o n_conexo
+* @param v Vértice atual
+* @param visitado Array de vértices visitados
+ */
 void Grafo_Matriz::dfs(int v, bool visitado[]) {
     visitado[v] = true;
     for (int u = 1; u <= num_vertices; ++u) {
@@ -301,6 +343,10 @@ void Grafo_Matriz::dfs(int v, bool visitado[]) {
     }
 }
 
+/**
+* @brief Função para verificar o número de componentes conexas do grafo
+* @return Número de componentes conexas
+*/
 int Grafo_Matriz::n_conexo() {
 	bool visitado[num_vertices + 1] = {false};
 	int componentes = 0;
@@ -316,9 +362,11 @@ int Grafo_Matriz::n_conexo() {
 	return componentes_conexas;
 }
 
-
+/**
+* @brief Função para verificar o grau do grafo
+* @return Grau do grafo (grau máximo entre o grau de todos os vértices)
+*/
 int Grafo_Matriz::get_grau() {
-	// Retorna o grau máximo do grafo
 	int grau_max = 0;
 	for (int i = 1; i <= num_vertices; i++) {
 		int grau = 0;
@@ -331,43 +379,55 @@ int Grafo_Matriz::get_grau() {
 	return grau_max;
 }
 
+/**
+* @brief Função para verificar a ordem do grafo
+* @return Ordem do grafo (número de vértices)
+*/
 int Grafo_Matriz::get_ordem() {
-
 	return num_vertices;
-
 }
 
+/**
+* @brief Função para verificar se o grafo é direcionado
+* @return true: se o grafo é direcionado, false: caso contrário
+*/
 bool Grafo_Matriz::eh_direcionado() {
-
 	return direcionado;
-
 }
 
+/**
+* @brief Função para verificar se o grafo possui vértices ponderados
+* @return true: se o grafo possui vértices ponderados, false: caso contrário
+*/
 bool Grafo_Matriz::vertice_ponderado() {
-
 	return peso_vertices;
-
 }
 
+/**
+* @brief Função para verificar se o grafo possui arestas ponderadas
+* @return true: se o grafo possui arestas ponderadas, false: caso contrário
+*/
 bool Grafo_Matriz::aresta_ponderada() {
-
 	return peso_arestas;
-
 }
 
-bool Grafo_Matriz::eh_completo()
-{
+/**
+* @grief Função para verificar se o grafo é completo
+* @return true: se o grafo é completo, false: caso contrário
+*/
+bool Grafo_Matriz::eh_completo() {
 	for (int i = 1; i <= num_vertices; i++)
-		for (int j = 1; j <= num_vertices; j++)
-		{
+		for (int j = 1; j <= num_vertices; j++) {
 			if (matriz_ligacoes[i][j] == false && i != j)
 				return false;
 		}
-
 	return true;
-
 }
 
+/**
+* @brief Função para verificar se o grafo é uma árvore
+* @return true: se o grafo é uma árvore, false: caso contrário
+*/
 bool Grafo_Matriz::eh_arvore() {
 	if (!direcionado) {
 		return n_conexo() == 1 && num_arestas == (num_vertices - 1)*2;
@@ -375,6 +435,16 @@ bool Grafo_Matriz::eh_arvore() {
 	return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
+/**
+* @brief Função auxiliar para a busca em profundidade para verificar se o grafo possui vértices de articulação
+* @param u Vértice atual
+* @param visitado Array de vértices visitados
+* @param discovery Array de descobertas
+* @param low Array de valores low
+* @param parent Array de pais
+* @param tempo Tempo de descoberta
+* @param possui_articulacao Flag para verificar se o grafo possui vértices de articulação
+*/
 void Grafo_Matriz::dfs(int u, bool visitado[], int discovery[], int low[], int parent[], int& tempo, bool& possui_articulacao) {
 	visitado[u] = true;
 	discovery[u] = low[u] = ++tempo;
@@ -400,7 +470,10 @@ void Grafo_Matriz::dfs(int u, bool visitado[], int discovery[], int low[], int p
 	}
 }
 
-
+/**
+* @brief Função para verificar se o grafo possui vértices de articulação
+* @return true: se o grafo possui vértices de articulação, false: caso contrário
+*/
 bool Grafo_Matriz::possui_articulacao() {
 	bool visitado[num_vertices + 1] = {false};
 	int discovery[num_vertices + 1];
@@ -426,7 +499,10 @@ bool Grafo_Matriz::possui_articulacao() {
 	return possui_articulacao;
 }
 
-
+/**
+* @brief Função para verificar se o grafo possui arestas pontes
+* @return true: se o grafo possui arestas pontes, false: caso contrário
+*/
 bool Grafo_Matriz::possui_ponte() {
 	int componentes_iniciais = n_conexo();
 	for (int u = 1; u <= num_vertices; ++u) {
@@ -452,7 +528,9 @@ bool Grafo_Matriz::possui_ponte() {
 	return false;
 }
 
-
+/**
+* @brief Função para exibir a descrição do grafo tanto em um documento quanto no console
+*/
 void Grafo_Matriz::exibe_descricao() {
 	std::cout << "Grau: " << get_grau() << std::endl;
 	std::cout << "Ordem: " << get_ordem() << std::endl;
@@ -486,4 +564,5 @@ void Grafo_Matriz::exibe_descricao() {
     arquivo_descricao << "Vertice de Articulacao: " << (possui_articulacao() ? "Sim" : "Nao") << std::endl;
 
     arquivo_descricao.close();
+
 }

@@ -5,8 +5,11 @@
 #include "grafo.h"
 #include "lista_encadeada.h"
 
-class Grafo_Lista : public Grafo
-{
+/**
+* @file grafo_lista.h
+* @brief Classe que implementa um grafo utilizando lista encadeada.
+*/
+class Grafo_Lista : public Grafo {
     private:
         ListaVertices vertices;
         int num_vertices;
@@ -25,7 +28,7 @@ class Grafo_Lista : public Grafo
     public:
         Grafo_Lista();
         ~Grafo_Lista();
-        // Implementação das funções abstratas
+        // Funções abstratas
         bool eh_bipartido() override;
         int n_conexo() override;
         int get_grau() override;

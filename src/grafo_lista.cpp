@@ -4,33 +4,43 @@
 #include <iostream>
 #include <random>
 
+/**
+* @file grafo_lista.cpp
+* @brief Implementação das funções referente à classe grafo_lista
+*/
+
+/**
+* @brief Construtor padrão da classe grafo_lista
+*/
 Grafo_Lista::Grafo_Lista() : num_vertices(0), num_arestas(0),
                              direcionado(false),
                              peso_vertices(false), peso_arestas(false), completo(false), bipartido(false),
                              arvore(false), possui_ponte_flag(false), possui_articulacao_flag(false),
                              componentes_conexas(0) {}
 
-// Destructor
+/**
+* @brief Destrutor padrão da classe grafo_lista
+*/
 Grafo_Lista::~Grafo_Lista() {}
 
-// Adiciona uma aresta à lista
-void Grafo_Lista::adicionar_aresta(int origem, int destino, int peso)
-{
-    // Localiza ou cria o vértice de origem
+/**
+* @brief Função para adicionar uma aresta ao grafo
+* @param origem Vértice de origem da aresta
+* @param destino Vértice de destino da aresta
+* @param peso Peso da aresta
+*/
+void Grafo_Lista::adicionar_aresta(int origem, int destino, int peso) {
     NoVertice *verticeOrigem = vertices.buscar_vertice(origem);
-    if (!verticeOrigem)
-    {
+    if (!verticeOrigem) {
         vertices.adicionar_vertice(origem);
         verticeOrigem = vertices.buscar_vertice(origem);
     }
 
-    // Verifica se a aresta já existe
     NoAresta *arestaAtual = verticeOrigem->arestas;
-    while (arestaAtual)
-    {
-        if (arestaAtual->destino == destino)
-        {
-            // Aresta já existe, não adiciona novamente
+
+    while (arestaAtual) {
+        if (arestaAtual->destino == destino) {
+            // Aresta já existe
             return;
         }
         arestaAtual = arestaAtual->prox;
@@ -42,8 +52,7 @@ void Grafo_Lista::adicionar_aresta(int origem, int destino, int peso)
     verticeOrigem->arestas = novaAresta;
 
     // Se o grafo não é direcionado, adiciona a aresta inversa
-    if (!direcionado)
-    {
+    if (!direcionado) {
         NoVertice *verticeDestino = vertices.buscar_vertice(destino);
         if (!verticeDestino)
         {
@@ -51,19 +60,16 @@ void Grafo_Lista::adicionar_aresta(int origem, int destino, int peso)
             verticeDestino = vertices.buscar_vertice(destino);
         }
 
-        // Verifica se a aresta inversa já existe
         arestaAtual = verticeDestino->arestas;
-        while (arestaAtual)
-        {
-            if (arestaAtual->destino == origem)
-            {
-                // Aresta inversa já existe, não adiciona novamente
+
+        while (arestaAtual) {
+            if (arestaAtual->destino == origem) {
+                // Não adiciona novamente
                 return;
             }
             arestaAtual = arestaAtual->prox;
         }
 
-        // Adiciona a nova aresta inversa
         NoAresta *novaArestaInversa = new NoAresta(origem, peso);
         novaArestaInversa->prox = verticeDestino->arestas;
         verticeDestino->arestas = novaArestaInversa;
@@ -73,27 +79,25 @@ void Grafo_Lista::adicionar_aresta(int origem, int destino, int peso)
 }
 
 
-// Carrega o grafo a partir de um arquivo
-void Grafo_Lista::carrega_grafo(const std::string &arquivo)
-{
+/**
+* @brief Função para carregar um grafo a partir de um arquivo
+* @param arquivo Nome do arquivo a ser carregado
+*/
+void Grafo_Lista::carrega_grafo(const std::string &arquivo) {
     std::ifstream inputFile(arquivo);
-    if (!inputFile.is_open())
-    {
+    if (!inputFile.is_open()) {
         throw std::runtime_error("Erro ao abrir o arquivo: " + arquivo);
     }
 
     std::string linha;
 
-    // Lendo os metadados
-    if (std::getline(inputFile, linha))
-    {
+    if (std::getline(inputFile, linha)) {
         std::istringstream metaStream(linha);
         metaStream >> num_vertices >> direcionado >> peso_vertices >> peso_arestas;
     }
 
-    // Se os vértices são ponderados, ler os pesos dos vértices
-    if (peso_vertices && std::getline(inputFile, linha))
-    {
+    // Se os vértices são ponderados, ler os pesos
+    if (peso_vertices && std::getline(inputFile, linha)) {
         std::istringstream pesoVerticeStream(linha);
         for (int i = 1; i <= num_vertices; ++i)
         {
@@ -104,8 +108,7 @@ void Grafo_Lista::carrega_grafo(const std::string &arquivo)
             }
         }
     }
-    else
-    {
+    else {
         for (int i = 1; i <= num_vertices; ++i)
         {
             vertices.adicionar_vertice(i);
@@ -113,13 +116,11 @@ void Grafo_Lista::carrega_grafo(const std::string &arquivo)
     }
 
     // Lendo as arestas
-    while (std::getline(inputFile, linha))
-    {
+    while (std::getline(inputFile, linha)) {
         std::istringstream arestaStream(linha);
         int origem, destino, peso = 0;
         arestaStream >> origem >> destino;
-        if (peso_arestas)
-        {
+        if (peso_arestas) {
             arestaStream >> peso;
         }
         adicionar_aresta(origem, destino, peso);
@@ -128,7 +129,12 @@ void Grafo_Lista::carrega_grafo(const std::string &arquivo)
     inputFile.close();
 }
 
-// Função auxiliar para verificar grau
+/**
+* @brief Função para verificar o grau de um vértice
+* @param vertice Vértice a ser verificado
+* @param grau_max Grau máximo permitido
+* @return Grau do vértice - true: grau menor que o máximo, false: caso contrário
+*/
 bool Grafo_Lista::verifica_grau(int vertice, int grau_max) {
     int grau_atual = 0;
     NoVertice* verticeAtual = vertices.buscar_vertice(vertice);
@@ -138,15 +144,17 @@ bool Grafo_Lista::verifica_grau(int vertice, int grau_max) {
         grau_atual++;
     }
 
-    // Verifica se o grau está abaixo do máximo
     return grau_atual < grau_max;
 }
 
-// Função auxiliar para criar um grafo bipartido
+/**
+* @brief Função para gerar um grafo bipartido
+* @param grau_max Grau máximo permitido
+* @return true: se foi possível criar o grafo bipartido, false: caso contrário
+*/
 bool Grafo_Lista::gerar_bipartido(int grau_max) {
-    // Aloca arrays dinâmicos para as partições
-    int tamanho1 = (num_vertices + 1) / 2; // Partição 1 (metade dos vértices, arredondada para cima)
-    int tamanho2 = num_vertices / 2;       // Partição 2 (restante dos vértices)
+    int tamanho1 = (num_vertices + 1) / 2;
+    int tamanho2 = num_vertices / 2;
     int* particao1 = new int[tamanho1];
     int* particao2 = new int[tamanho2];
 
@@ -162,26 +170,26 @@ bool Grafo_Lista::gerar_bipartido(int grau_max) {
     }
 
     // Conectar vértices entre partições respeitando o grau máximo
-    for (int i = 0; i < indice1; ++i) { // Itera sobre particao1
-        for (int j = 0; j < indice2; ++j) { // Itera sobre particao2
+    for (int i = 0; i < indice1; ++i) {
+        for (int j = 0; j < indice2; ++j) {
             int u = particao1[i];
             int v = particao2[j];
             if (verifica_grau(u, grau_max) && verifica_grau(v, grau_max)) {
                 adicionar_aresta(u, v, peso_arestas ? rand() % 20 - 10 : 1);
-                std::cout << "u: " << u << " v: " << v << std::endl;
             }
         }
     }
 
-    // Libera a memória alocada para os arrays
     delete[] particao1;
     delete[] particao2;
 
-    // Verifica se o grafo gerado é bipartido
     return eh_bipartido();
 }
 
-// Função auxiliar para criar um grafo completo
+/**
+* @brief Função para gerar um grafo completo
+* @param grau_max Grau máximo permitido
+*/
 void Grafo_Lista::gerar_completo(int grau_max) {
     for (int i = 1; i <= num_vertices; ++i) {
         for (int j = 1; j <= num_vertices; ++j) {
@@ -191,6 +199,10 @@ void Grafo_Lista::gerar_completo(int grau_max) {
     }
 }
 
+/**
+* @brief Função para gerar uma árvore
+* @param grau_max Grau máximo permitido
+*/
 void Grafo_Lista::gerar_arvore(int grau_max) {
     for (int i = 2; i <= num_vertices; ++i) {
         int origem;
@@ -203,6 +215,14 @@ void Grafo_Lista::gerar_arvore(int grau_max) {
     }
 }
 
+/**
+* @brief Função para verificar se o grafo atende às restrições
+* @param grau_max Grau máximo permitido
+* @param componentes Número de componentes conexas
+* @param ponte_flag Flag para verificar se o grafo possui pontes
+* @param articulacao_flag Flag para verificar se o grafo possui vértices de articulação
+* @return true: se o grafo atende às restrições, false: caso contrário
+*/
 bool Grafo_Lista::verifica_restricoes(int grau_max, int componentes, bool ponte_flag, bool articulacao_flag) {
     if (n_conexo() != componentes) return false;
     if (ponte_flag && !possui_ponte()) return false;
@@ -213,16 +233,19 @@ bool Grafo_Lista::verifica_restricoes(int grau_max, int componentes, bool ponte_
     return true;
 }
 
-// Função principal para criar novo grafo
+/**
+* @brief Função para gerar um novo grafo com base em um arquivo de descrição e salvar em um arquivo de saída
+* @param descricao Arquivo de descrição do grafo
+* @param arquivo Arquivo de saída
+* @warning O caso trivial, diferente dos demais, usa força bruta para gerar um grafo que atenda às restrições, o que pode fazer a geração demorar mais tempo
+*/
 void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo) {
-    // Abre o arquivo de descrição
     std::ifstream arquivo_descricao(descricao);
     if (!arquivo_descricao.is_open()) {
         std::cerr << "Não foi possível abrir o arquivo de descrição." << std::endl;
         return;
     }
 
-    // Lê os parâmetros do arquivo
     int grau_max, ordem, direcionado_flag, componentes, vertices_ponderados_flag,
         arestas_ponderadas_flag, completo_flag, bipartido_flag, arvore_flag,
         ponte_flag, articulacao_flag;
@@ -232,36 +255,31 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
     arquivo_descricao >> completo_flag >> bipartido_flag >> arvore_flag;
     arquivo_descricao >> ponte_flag >> articulacao_flag;
 
-    // Inicializa atributos
     num_vertices = ordem;
     num_arestas = 0;
     direcionado = direcionado_flag;
     peso_vertices = vertices_ponderados_flag;
     peso_arestas = arestas_ponderadas_flag;
 
-    // Gera os vértices
     for (int i = 1; i <= num_vertices; ++i) {
         vertices.adicionar_vertice(i);
     }
 
-    // Gera pesos dos vértices, se necessário
     if (peso_vertices) {
         for (int i = 1; i <= num_vertices; ++i) {
             pesos_vertices[i] = rand() % 10 + 1;
         }
     }
 
-    // Gera o grafo com base nas restrições
     bool sucesso = false;
 
     if (completo_flag) {
         gerar_completo(grau_max);
         sucesso = eh_completo();
-    } else if (arvore_flag)
-    {
+    } else if (arvore_flag) {
         gerar_arvore(grau_max);
         sucesso = eh_arvore();
-    }else if (bipartido_flag) {
+    } else if (bipartido_flag) {
         sucesso = gerar_bipartido(grau_max);
     } else {
         std::random_device rd;
@@ -281,14 +299,13 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
     }
 
     if (!sucesso) {
-        std::cerr << "Não foi possível gerar o grafo com as restrições fornecidas." << std::endl;
+        std::cerr << "Nao foi possivel gerar o grafo com as restricoes fornecidas." << std::endl;
         return;
     }
 
-    // Salva o grafo no arquivo de saída
     std::ofstream arquivo_saida(arquivo);
     if (!arquivo_saida.is_open()) {
-        std::cerr << "Não foi possível abrir o arquivo de saída." << std::endl;
+        std::cerr << "Nao foi possivel abrir o arquivo de saida." << std::endl;
         return;
     }
 
@@ -312,27 +329,29 @@ void Grafo_Lista::novo_grafo(const std::string &descricao, std::string &arquivo)
     }
 }
 
-// Implementação das funções abstratas
+/**
+* @brief Função que verifica se um grafo é bipartido
+* @return true: se o grafo é bipartido, false: caso contrário
+*/
 bool Grafo_Lista::eh_bipartido() {
     if (num_vertices == 0)
         return true;
 
     int* cores = new int[num_vertices + 1];
-    int* fila = new int[num_vertices + 1]; // Implementação manual de fila
+    int* fila = new int[num_vertices + 1];
     int inicio = 0, fim = 0;
 
     for (int i = 0; i <= num_vertices; ++i) {
-        cores[i] = -1; // Inicializa todas as cores como "não colorido"
+        cores[i] = -1;
     }
 
-    // Verifica cada componente conexa (caso o grafo seja desconexo)
     for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        if (cores[vertice->id] == -1) { // Vértice não visitado
-            cores[vertice->id] = 0; // Inicia com a cor 0
-            fila[fim++] = vertice->id; // Enfileira o vértice inicial
+        if (cores[vertice->id] == -1) {
+            cores[vertice->id] = 0;
+            fila[fim++] = vertice->id;
 
             while (inicio < fim) {
-                int atual = fila[inicio++]; // Desenfileira o próximo vértice
+                int atual = fila[inicio++];
                 NoVertice* verticeAtual = vertices.buscar_vertice(atual);
                 if (!verticeAtual) continue;
 
@@ -340,11 +359,9 @@ bool Grafo_Lista::eh_bipartido() {
                     int destino = aresta->destino;
 
                     if (cores[destino] == -1) {
-                        // Atribui a cor oposta ao vértice atual
                         cores[destino] = 1 - cores[atual];
-                        fila[fim++] = destino; // Enfileira o vértice destino
+                        fila[fim++] = destino;
                     } else if (cores[destino] == cores[atual]) {
-                        // Encontramos dois vértices adjacentes com a mesma cor
                         delete[] cores;
                         delete[] fila;
                         return false;
@@ -359,21 +376,23 @@ bool Grafo_Lista::eh_bipartido() {
     return true;
 }
 
-
+/**
+* @brief Função auxiliar do n_conexo para explorar um componente conexo de cada vez
+* @param vertice_id Vértice a ser explorado
+* @param visitado Array de vértices visitados
+*/
 void Grafo_Lista::explorar_componente(int vertice_id, bool visitado[]) {
     visitado[vertice_id] = true;
 
     NoVertice* verticeAtual = vertices.buscar_vertice(vertice_id);
     if (!verticeAtual) return;
 
-    // Explora todas as arestas do vértice atual
     for (NoAresta* aresta = verticeAtual->arestas; aresta; aresta = aresta->prox) {
         if (!visitado[aresta->destino]) {
             explorar_componente(aresta->destino, visitado);
         }
     }
 
-    // Explora conexões "reversas" para tratar como não direcionado
     for (NoVertice* v = vertices.head; v; v = v->prox) {
         for (NoAresta* aresta = v->arestas; aresta; aresta = aresta->prox) {
             if (aresta->destino == vertice_id && !visitado[v->id]) {
@@ -383,23 +402,29 @@ void Grafo_Lista::explorar_componente(int vertice_id, bool visitado[]) {
     }
 }
 
+/**
+* @brief Função para verificar o número de componentes conexas do grafo
+* @return Número de componentes conexas
+*/
 int Grafo_Lista::n_conexo() {
-    bool* visitado = new bool[num_vertices](); // Array para marcar vértices visitados
+    bool* visitado = new bool[num_vertices]();
     int componentes = 0;
 
     for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
-        if (!visitado[vertice->id]) { // Novo componente encontrado
+        if (!visitado[vertice->id]) {
             componentes++;
             explorar_componente(vertice->id, visitado);
         }
     }
 
-    delete[] visitado; // Libera memória
+    delete[] visitado;
     return componentes;
 }
 
-
-
+/**
+* @brief Função para verificar o grau do grafo
+* @return Grau do grafo (grau máximo entre o grau de todos os vértices)
+*/
 int Grafo_Lista::get_grau() {
     int grau_max = 0;
 
@@ -421,28 +446,43 @@ int Grafo_Lista::get_grau() {
     return grau_max;
 }
 
-int Grafo_Lista::get_ordem()
-{
+/**
+* @brief Função para verificar a ordem do grafo
+* @return Ordem do grafo (número de vértices)
+*/
+int Grafo_Lista::get_ordem() {
     return num_vertices;
 }
 
-bool Grafo_Lista::eh_direcionado()
-{
+/**
+* @brief Função para verificar se o grafo é direcionado
+* @return true: se o grafo é direcionado, false: caso contrário
+*/
+bool Grafo_Lista::eh_direcionado() {
     return direcionado;
 }
 
-bool Grafo_Lista::vertice_ponderado()
-{
+/**
+* @brief Função para verificar se os vértices são ponderados
+* @return true: se os vértices são ponderados, false: caso contrário
+*/
+bool Grafo_Lista::vertice_ponderado() {
     return peso_vertices;
 }
 
-bool Grafo_Lista::aresta_ponderada()
-{
+/**
+* @brief Função para verificar se as arestas são ponderadas
+* @return true: se as arestas são ponderadas, false: caso contrário
+*/
+bool Grafo_Lista::aresta_ponderada() {
     return peso_arestas;
 }
 
-bool Grafo_Lista::eh_completo()
-{
+/**
+* @brief Função para verificar se o grafo é completo
+* @return true: se o grafo é completo, false: caso contrário
+*/
+bool Grafo_Lista::eh_completo() {
     for (NoVertice* vertice = vertices.head; vertice; vertice = vertice->prox) {
         int grau = 0;
         for (NoAresta* aresta = vertice->arestas; aresta; aresta = aresta->prox) {
@@ -455,10 +495,24 @@ bool Grafo_Lista::eh_completo()
     return true;
 }
 
+/**
+* @brief Função para verificar se o grafo é uma árvore
+* @return true: se o grafo é uma árvore, false: caso contrário
+*/
 bool Grafo_Lista::eh_arvore() {
     return n_conexo() == 1 && num_arestas == num_vertices - 1;
 }
 
+/**
+* @brief Função auxiliar para a função de verificação de vértices de articulação
+* @param u Vértice atual
+* @param visitado Array de vértices visitados
+* @param discovery Array de descobertas
+* @param low Array de valores low
+* @param parent Array de pais
+* @param possui_articulacao Flag para verificar se o grafo possui vértices de articulação
+* @param tempo Tempo de descoberta
+*/
 void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_articulacao, int& tempo) {
     visitado[u] = true;
     discovery[u] = low[u] = ++tempo;
@@ -466,7 +520,7 @@ void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int l
 
     NoVertice* verticeAtual = vertices.buscar_vertice(u);
     if (!verticeAtual) {
-        std::cerr << "Vértice " << u << " não encontrado durante a DFS.\n";
+        std::cerr << "Vertice " << u << " nao encontrado durante a DFS.\n";
         return;
     }
 
@@ -494,6 +548,10 @@ void Grafo_Lista::dfs_articulacao(int u, bool visitado[], int discovery[], int l
     }
 }
 
+/**
+* @brief Função para verificar se o grafo possui vértices de articulação
+* @return true: se o grafo possui vértices de articulação, false: caso contrário
+*/
 bool Grafo_Lista::possui_articulacao() {
     bool* visitado = new bool[num_vertices + 1];
     int* discovery = new int[num_vertices + 1];
@@ -526,6 +584,16 @@ bool Grafo_Lista::possui_articulacao() {
     return possui_articulacao_flag;
 }
 
+/**
+* @brief Função auxiliar para a função de verificação de arestas pontes
+* @param u Vértice atual
+* @param visitado Array de vértices visitados
+* @param discovery Array de descobertas
+* @param low Array de valores low
+* @param parent Array de pais
+* @param possui_ponte Flag para verificar se o grafo possui arestas pontes
+* @param tempo Tempo de descoberta
+*/
 void Grafo_Lista::dfs_ponte(int u, bool visitado[], int discovery[], int low[], int parent[], bool& possui_ponte, int& tempo) {
     visitado[u] = true;
     discovery[u] = low[u] = ++tempo;
@@ -542,7 +610,6 @@ void Grafo_Lista::dfs_ponte(int u, bool visitado[], int discovery[], int low[], 
 
             low[u] = std::min(low[u], low[v]);
 
-            // Verificar se a aresta (u-v) é uma ponte
             if (low[v] > discovery[u]) {
                 possui_ponte = true;
             }
@@ -553,6 +620,10 @@ void Grafo_Lista::dfs_ponte(int u, bool visitado[], int discovery[], int low[], 
     }
 }
 
+/**
+* @brief Função para verificar se o grafo possui arestas pontes
+* @return true: se o grafo possui arestas pontes, false: caso contrário
+*/
 bool Grafo_Lista::possui_ponte() {
     bool* visitado = new bool[num_vertices + 1];
     int* discovery = new int[num_vertices + 1];
@@ -584,14 +655,16 @@ bool Grafo_Lista::possui_ponte() {
     return possui_ponte;
 }
 
+/**
+* @brief Função para exibir a descrição do grafo tanto em um documento quanto no console
+*/
 void Grafo_Lista::exibe_descricao()
 {
     std::cout << "Grau: " << get_grau() << std::endl;
     std::cout << "Ordem: " << get_ordem() << std::endl;
     std::cout << "Direcionado: " << (eh_direcionado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Componentes conexas: " << n_conexo() << std::endl;
-    std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nao")
-              << std::endl;
+    std::cout << "Vertices ponderados: " << (vertice_ponderado() ? "Sim" : "Nao") << std::endl;
     std::cout << "Arestas ponderadas: " << (aresta_ponderada() ? "Sim" : "Nao") << std::endl;
     std::cout << "Completo: " << (eh_completo() ? "Sim" : "Nao") << std::endl;
     std::cout << "Bipartido: " << (eh_bipartido() ? "Sim" : "Nao") << std::endl;
