@@ -676,7 +676,7 @@ void Grafo_Lista::exibe_descricao()
     std::ofstream arquivo_descricao("descricao_saida.txt");
     if (!arquivo_descricao.is_open())
     {
-        std::cerr << "Erro ao abrir o arquivo de descrição." << std::endl;
+        std::cerr << "Erro ao abrir o arquivo de descricao." << std::endl;
         return;
     }
 
