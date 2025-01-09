@@ -3,7 +3,7 @@ project(main)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(main src/main.cpp
+add_executable(main.out src/main.cpp
         src/grafo_lista.cpp
         include/grafo_lista.h
         include/lista_encadeada.h
