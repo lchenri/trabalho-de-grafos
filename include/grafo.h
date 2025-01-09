@@ -2,7 +2,13 @@
 #define GRAFO_H
 #include <string>
 
-class Grafo{
+/**
+* @file grafo.h
+* @brief Classe abstrata que define as operações que podem ser realizadas em um grafo.
+* @details Essa classe possui duas filhas: grafo_matriz e grafos_lista, que implementam as operações definidas aqui.
+*/
+
+class Grafo {
 public:
     virtual ~Grafo() {}
     virtual bool eh_bipartido() = 0;
