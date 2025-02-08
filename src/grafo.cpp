@@ -52,16 +52,27 @@ bool grafo::eh_completo() {
     return true;
 }
 
+void liberar_arestas_temp(aresta_grafo* cabeca) {
+    while (cabeca) {
+        aresta_grafo* temp = cabeca;
+        cabeca = cabeca->proxima;
+        delete temp; // Libera apenas a cópia
+    }
+}
+
 int grafo::get_grau() {
     int grau_maximo = 0;
     for (int i = 1; i <= get_ordem(); ++i) {
         int grau_atual = 0;
 
-        aresta_grafo* aresta = get_vizinhos(i);
-        while (aresta) {
+        aresta_grafo* vizinhos = get_vizinhos(i);
+        aresta_grafo* atual = vizinhos;
+        while (atual) {
             grau_atual++;
-            aresta = aresta->proxima;
+            atual = atual->proxima;
         }
+
+        liberar_arestas_temp(vizinhos);
 
         if (direcionado) {
             for (int j = 1; j <= get_ordem(); ++j) {

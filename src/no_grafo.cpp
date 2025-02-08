@@ -11,8 +11,8 @@ no_grafo::no_grafo(int id, int peso) :
 no_grafo::~no_grafo() {
     aresta_grafo* atual = primeira_aresta;
     while (atual) {
-        aresta_grafo* proxima = atual->proxima;
-        delete atual;
-        atual = proxima;
+        aresta_grafo* temp = atual;
+        atual = atual->proxima;
+        delete temp;
     }
 }

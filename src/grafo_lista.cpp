@@ -34,7 +34,28 @@ aresta_grafo* grafo_lista::get_aresta(int origem, int destino) {
 
 aresta_grafo* grafo_lista::get_vizinhos(int id) {
     no_grafo* no = get_no(id);
-    return no ? no->primeira_aresta : nullptr;
+    if (!no) return nullptr;
+
+    aresta_grafo* cabeca = nullptr;
+    aresta_grafo* atual = nullptr;
+
+    aresta_grafo* aresta_original = no->primeira_aresta;
+    while (aresta_original) {
+        // Cria uma cópia da aresta original
+        aresta_grafo* copia = new aresta_grafo(aresta_original->destino, aresta_original->peso);
+
+        if (!cabeca) {
+            cabeca = copia;
+            atual = cabeca;
+        } else {
+            atual->proxima = copia;
+            atual = atual->proxima;
+        }
+
+        aresta_original = aresta_original->proxima;
+    }
+
+    return cabeca;
 }
 
 int grafo_lista::get_ordem() {
