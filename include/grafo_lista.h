@@ -3,6 +3,11 @@
 #include "grafo.h"
 #include "no_grafo.h"
 
+/**
+ * @file grafo_lista.h
+ * @brief Classe que representa um grafo implementado com listas de adjacência.
+ * @details Cada nó do grafo possui um id e um peso, e cada aresta possui um destino, um peso e um ponteiro para a próxima aresta.
+ */
 class grafo_lista : public grafo {
 private:
     no_grafo* primeiro_no;

@@ -9,8 +9,6 @@
 * @brief Classe abstrata que define as operações que podem ser realizadas em um grafo.
 * @details Essa classe possui duas filhas: grafo_matriz e grafos_lista, que implementam as operações definidas aqui.
 */
-
-
 class grafo {
 protected:
     bool direcionado;

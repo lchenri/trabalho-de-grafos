@@ -1,7 +1,20 @@
 #include "../include/grafo_lista.h"
 
+/**
+ * @file grafo_lista.cpp
+ * @brief Implementação da classe grafo_lista.
+ */
+
+/**
+ * @brief Construtor da classe grafo_lista.
+ * @details O ponteiro para o primeiro nó é inicializado como nullptr.
+ */
 grafo_lista::grafo_lista() : primeiro_no(nullptr) {}
 
+/**
+ * @brief Destrutor da classe grafo_lista.
+ * @details Deleta todos os nós e arestas do grafo.
+ */
 grafo_lista::~grafo_lista() {
     no_grafo* atual = primeiro_no;
     while (atual) {
@@ -11,6 +24,11 @@ grafo_lista::~grafo_lista() {
     }
 }
 
+/**
+ * @brief Retorna um nó do grafo.
+ * @param id O id do nó a ser retornado.
+ * @return O nó com o id especificado, ou nullptr se ele não existir.
+ */
 no_grafo* grafo_lista::get_no(int id) {
     no_grafo* atual = primeiro_no;
     while (atual) {
@@ -20,6 +38,12 @@ no_grafo* grafo_lista::get_no(int id) {
     return nullptr;
 }
 
+/**
+ * @brief Retorna uma aresta do grafo.
+ * @param origem O id do nó de origem da aresta.
+ * @param destino O id do nó de destino da aresta.
+ * @return A aresta que vai do nó de origem para o nó de destino, ou nullptr se ela não existir.
+ */
 aresta_grafo* grafo_lista::get_aresta(int origem, int destino) {
     no_grafo* no_origem = get_no(origem);
     if (!no_origem) return nullptr;
@@ -32,6 +56,11 @@ aresta_grafo* grafo_lista::get_aresta(int origem, int destino) {
     return nullptr;
 }
 
+/**
+ * @brief Retorna as arestas que saem de um nó.
+ * @param id O id do nó.
+ * @return Um ponteiro para a primeira aresta que sai do nó, ou nullptr se ele não existir.
+ */
 aresta_grafo* grafo_lista::get_vizinhos(int id) {
     no_grafo* no = get_no(id);
     if (!no) return nullptr;
@@ -58,6 +87,10 @@ aresta_grafo* grafo_lista::get_vizinhos(int id) {
     return cabeca;
 }
 
+/**
+ * @brief Retorna a ordem do grafo.
+ * @return O número de nós do grafo.
+ */
 int grafo_lista::get_ordem() {
     int count = 0;
     no_grafo* atual = primeiro_no;
@@ -68,10 +101,21 @@ int grafo_lista::get_ordem() {
     return count;
 }
 
+/**
+ * @brief Verifica se uma aresta existe no grafo.
+ * @param origem O id do nó de origem da aresta.
+ * @param destino O id do nó de destino da aresta.
+ * @return true se a aresta existe, false caso contrário.
+ */
 bool grafo_lista::existe_aresta(int origem, int destino) {
     return get_aresta(origem, destino) != nullptr;
 }
 
+/**
+ * @brief Adiciona um nó ao grafo.
+ * @param id O id do nó.
+ * @param peso O peso do nó.
+ */
 void grafo_lista::add_no(int id, int peso) {
     if (get_no(id)) return;
 
@@ -80,6 +124,12 @@ void grafo_lista::add_no(int id, int peso) {
     primeiro_no = novo_no;
 }
 
+/**
+ * @brief Adiciona uma aresta ao grafo.
+ * @param origem O id do nó de origem da aresta.
+ * @param destino O id do nó de destino da aresta.
+ * @param peso O peso da aresta.
+ */
 void grafo_lista::add_aresta(int origem, int destino, int peso) {
     if (origem == destino) return;
 

@@ -3,6 +3,11 @@
 
 #include "aresta_grafo.h"
 
+/**
+ * @file no_grafo.h
+ * @brief Classe que representa um nó de um grafo.
+ * @details Cada nó possui um id, um peso e um ponteiro para a primeira aresta que parte dele.
+ */
 class no_grafo {
 public:
     int id;
