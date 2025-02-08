@@ -2,11 +2,11 @@
 #define GRAFO_MATRIZ_H
 
 #include "grafo.h"
-#include <vector>
 
 class grafo_matriz : public grafo {
 private:
-    std::vector<std::vector<aresta_grafo*>> matriz;
+    aresta_grafo*** matriz;
+    bool matriz_inicializada;
 
 public:
     grafo_matriz();
@@ -19,8 +19,6 @@ public:
     bool existe_aresta(int origem, int destino) override;
 
     void add_no(int id, int peso) override;
-
-
     void add_aresta(int origem, int destino, int peso) override;
 };
 

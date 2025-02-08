@@ -1,7 +1,3 @@
-//
-// Created by lucas on 08/02/2025.
-//
-
 #ifndef ARESTA_GRAFO_HPP
 #define ARESTA_GRAFO_HPP
 
@@ -16,4 +12,4 @@ public:
     ~aresta_grafo();
 };
 
-#endif // ARESTA_GRAFO_HPP
+#endif // ARESTA_GRAFO_H

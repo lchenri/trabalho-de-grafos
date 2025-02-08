@@ -6,5 +6,4 @@ aresta_grafo::aresta_grafo(int destino, int peso) :
     proxima(nullptr)
 {}
 
-// Destruidor padrão (não é virtual pois não há herança para arestas)
 aresta_grafo::~aresta_grafo() = default;

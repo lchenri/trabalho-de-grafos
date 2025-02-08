@@ -7,8 +7,6 @@
 
 grafo::grafo() {}
 
-
-
 void grafo::carrega_grafo(const std::string& arquivo) {
 
     std::ifstream file(arquivo);
@@ -22,7 +20,6 @@ void grafo::carrega_grafo(const std::string& arquivo) {
     this->ponderado_arestas = pond_arestas;
     this->num_nos = num_nos;
 
-    // Ler pesos dos vértices se necessário
     if (ponderado_vertices) {
         for (int i = 1; i <= num_nos; ++i) {
             int peso;
@@ -35,7 +32,6 @@ void grafo::carrega_grafo(const std::string& arquivo) {
         }
     }
 
-    // Ler arestas
     int origem, destino, peso = 0;
     while (file >> origem >> destino) {
         if (ponderado_arestas) file >> peso;
@@ -61,14 +57,12 @@ int grafo::get_grau() {
     for (int i = 1; i <= get_ordem(); ++i) {
         int grau_atual = 0;
 
-        // Conta arestas de saída (comum para ambas as representações)
         aresta_grafo* aresta = get_vizinhos(i);
         while (aresta) {
             grau_atual++;
             aresta = aresta->proxima;
         }
 
-        // Se direcionado, conta arestas de entrada também
         if (direcionado) {
             for (int j = 1; j <= get_ordem(); ++j) {
                 if (existe_aresta(j, i)) grau_atual++;

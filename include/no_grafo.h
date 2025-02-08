@@ -1,4 +1,3 @@
-// include/no_grafo.hpp
 #ifndef NO_GRAFO_H
 #define NO_GRAFO_H
 

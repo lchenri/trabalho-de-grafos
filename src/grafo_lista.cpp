@@ -1,5 +1,4 @@
 #include "../include/grafo_lista.h"
-#include <stdexcept>
 
 grafo_lista::grafo_lista() : primeiro_no(nullptr) {}
 
@@ -53,7 +52,7 @@ bool grafo_lista::existe_aresta(int origem, int destino) {
 }
 
 void grafo_lista::add_no(int id, int peso) {
-    if (get_no(id)) return; // Evita duplicatas
+    if (get_no(id)) return;
 
     no_grafo* novo_no = new no_grafo(id, peso);
     novo_no->proximo = primeiro_no;
@@ -61,22 +60,19 @@ void grafo_lista::add_no(int id, int peso) {
 }
 
 void grafo_lista::add_aresta(int origem, int destino, int peso) {
-    if (origem == destino) return; // Ignora laços
+    if (origem == destino) return;
 
     no_grafo* no_origem = get_no(origem);
     no_grafo* no_destino = get_no(destino);
 
     if (!no_origem || !no_destino) return;
 
-    // Verifica se aresta já existe
     if (existe_aresta(origem, destino)) return;
 
-    // Adiciona aresta na origem
     aresta_grafo* nova_aresta = new aresta_grafo(destino, peso);
     nova_aresta->proxima = no_origem->primeira_aresta;
     no_origem->primeira_aresta = nova_aresta;
 
-    // Se não direcionado, adiciona inversa
     if (!direcionado) {
         aresta_grafo* aresta_inversa = new aresta_grafo(origem, peso);
         aresta_inversa->proxima = no_destino->primeira_aresta;
