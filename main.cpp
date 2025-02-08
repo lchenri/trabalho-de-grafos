@@ -2,8 +2,8 @@
 #include <string>
 #include <fstream>
 
-#include "../include/grafo_lista.h"
-#include "../include/grafo_matriz.h"
+#include "include/grafo_lista.h"
+#include "include/grafo_matriz.h"
 /**
 * @file main.cpp
 * @brief Arquivo principal do programa
@@ -58,29 +58,13 @@ int main(int argc, char *argv[]) {
     if (modo == "-d") {
         const std::string arquivo = argv[3];
         if (estrutura == "-m") {
-            Grafo_Matriz grafo;
+            grafo_matriz grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
         } else if (estrutura == "-l") {
-            Grafo_Lista grafo;
+            grafo_lista grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
-        } else {
-            exibir_uso();
-            return 1;
-        }
-    }
-    else if (modo == "-c") {
-        std::string descricao = argv[3];
-        std::string arquivo = argv[4];
-        if (estrutura == "-m") {
-            Grafo_Matriz grafo;
-            grafo.novo_grafo(descricao, arquivo);
-            std::cout << "Novo grafo criado e salvo em " << arquivo << " usando matriz de adjacencia" << std::endl;
-        } else if (estrutura == "-l") {
-            Grafo_Lista grafo;
-            grafo.novo_grafo(descricao, arquivo);
-            std::cout << "Novo grafo criado e salvo em " << arquivo << " usando lista encadeada" << std::endl;
         } else {
             exibir_uso();
             return 1;
