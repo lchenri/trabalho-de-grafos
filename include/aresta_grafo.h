@@ -1,5 +1,5 @@
-#ifndef ARESTA_GRAFO_HPP
-#define ARESTA_GRAFO_HPP
+#ifndef ARESTA_GRAFO_H
+#define ARESTA_GRAFO_H
 
 class aresta_grafo {
 public:
