@@ -1,3 +1,0 @@
-/home/lucas/Documentos/trabalho/trabalho-de-grafos/CMakeFiles/main.out.dir
-/home/lucas/Documentos/trabalho/trabalho-de-grafos/CMakeFiles/edit_cache.dir
-/home/lucas/Documentos/trabalho/trabalho-de-grafos/CMakeFiles/rebuild_cache.dir
