@@ -58,11 +58,11 @@ int main(int argc, char *argv[]) {
     if (modo == "-d") {
         const std::string arquivo = argv[3];
         if (estrutura == "-m") {
-            Grafo_Matriz grafo;
+            grafo_matriz grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
         } else if (estrutura == "-l") {
-            Grafo_Lista grafo;
+            grafo_lista grafo;
             grafo.carrega_grafo(arquivo);
             grafo.exibe_descricao();
         } else {
