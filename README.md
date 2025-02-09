@@ -16,19 +16,9 @@ Este repositório contém o trabalho da disciplina DCC059 - Teoria dos Grafos mi
 
 ### Funcionalidades Implementadas
 As seguintes funções são implementadas na classe abstrata:
-- `eh_bipartido`: Verifica se o grafo é bipartido.
-- `n_conexo`: Calcula o número de componentes conexas.
-- `get_grau`: Retorna o grau do grafo.
-- `get_ordem`: Retorna a ordem do grafo.
-- `eh_direcionado`: Verifica se o grafo é direcionado.
-- `vertice_ponderado`: Verifica se os vértices do grafo têm peso.
-- `aresta_ponderada`: Verifica se as arestas do grafo têm peso.
-- `eh_completo`: Determina se o grafo é completo.
-- `eh_arvore`: Verifica se o grafo é uma árvore.
-- `possui_articulacao`: Verifica a existência de vértices de articulação.
-- `possui_ponte`: Verifica a existência de arestas ponte.
-- `carrega_grafo`: Lê um arquivo txt com um grafo e o carrega.
-- `novo_grafo`: Lê um arquivo txt de configuração e gera um grafo aleatório.
+- `eh_completo`: Verifica se o grafo é completo.
+- `get_grau`: retorna o grau maximo do grafo
+- `carrega_grafo`: constrói grafo a partir de um arquivo
 
 ### Requisitos e Restrições
 - O código deve seguir os princípios de Programação Orientada a Objetos, especialmente herança e encapsulamento.
@@ -41,8 +31,6 @@ A aplicação deve ser compilada e executada via terminal com as seguintes linha
 
 1. `main.out -d -m grafo.txt`: Carrega e descreve o grafo usando matriz de adjacência.
 2. `main.out -d -l grafo.txt`: Carrega e descreve o grafo usando lista encadeada.
-3. `main.out -c -m descricao.txt grafo.txt`: Gera um grafo aleatório com matriz de adjacência a partir de um arquivo de descrição.
-4. `main.out -c -l descricao.txt grafo.txt`: Gera um grafo aleatório com lista encadeada a partir de um arquivo de descrição.
 
 ### Envios e Apresentação
 O trabalho deve ser enviado em um arquivo zip contendo o código fonte, link para o projeto no GitHub, uma apresentação em PDF, documentação do código, e a identificação dos integrantes com suas contribuições. Haverá uma apresentação individual de 1 minuto por integrante na forma de elevator pitch, seguida por uma sessão de perguntas do professor.
@@ -50,6 +38,36 @@ O trabalho deve ser enviado em um arquivo zip contendo o código fonte, link par
 ### Avaliação
 A avaliação do trabalho será realizada com base na apresentação (`A`), na avaliação geral do trabalho (`T`), e na participação do aluno no desenvolvimento do código (`P`). A nota final será calculada pela fórmula: `Nota Final = A * T * P`.
 
+## Como rodar o projeto? 
+
+```bash
+#adiciona a pasta build para o cmake
+ mkdir build
+```
+
+```bash
+ cd build
+```
+```bash
+#instala as dependencias cmake
+ cmake ..
+```
+
+```bash
+#atualiza dependencia para run
+ make
+```
+```bash
+#executa para estrutura de matriz
+ ./main.out -d -m ../entradas/grafo.txt 
+```
+
+```bash
+#executa para estrutura de lista
+ ./main.out -d -l ../entradas/grafo.txt 
+```
+
+##
 **Departamento de Ciência da Computação - UFJF**
 **DCC059 - Teoria dos Grafos**
 **Prof. Gabriel Souza**
