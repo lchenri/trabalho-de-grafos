@@ -6,9 +6,6 @@
 - Nome do integrante 2: Pedro Lucas Botelho Freitas - 202135040
 - Nome do integrante 3: Julia Borges Beccari - 202135007
 
-## Link da documentação
-https://documentacao-grafos.vercel.app/index.html
-
 ## Resumo do Projeto
 
 Este repositório contém o trabalho da disciplina DCC059 - Teoria dos Grafos ministrada pelo Prof. Gabriel Souza no Departamento de Ciência da Computação da UFJF. O objetivo principal do projeto é implementar uma classe abstrata "grafo" em C++ com duas classes derivadas para diferentes estruturas de armazenamento de nós e arestas.
