@@ -25,6 +25,10 @@ public:
     virtual aresta_grafo* get_vizinhos(int id) = 0;
     virtual int get_ordem() = 0;
     virtual bool existe_aresta(int origem, int destino) = 0;
+    int* cobertura_gulosa(int* tamanho);
+    int* cobertura_randomizada(int* tamanho);
+    int* cobertura_reativa(int* tamanho);
+    int verificar_erro(int* cobertura, int tamanho);
 
     int get_grau();
     bool eh_completo();
